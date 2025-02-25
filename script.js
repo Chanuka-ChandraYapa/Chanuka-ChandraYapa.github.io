@@ -1,0 +1,562 @@
+let lastScrollY = window.scrollY;
+
+window.addEventListener("scroll", () => {
+  const navbar = document.querySelector(".navbar");
+
+  if (lastScrollY < window.scrollY) {
+    navbar.classList.add("hidden");
+  } else {
+    navbar.classList.remove("hidden");
+  }
+
+  lastScrollY = window.scrollY;
+});
+
+let ballClickCount = 0;
+
+document.addEventListener("DOMContentLoaded", function () {
+  const ball = document.querySelector(".ball");
+  const shadow = document.querySelector(".shadow");
+  const container = document.querySelector(".container");
+
+  let velocity = 0;
+  let position = container.clientHeight - ball.clientHeight / 2 - 35;
+  const gravity = 0.5;
+  const energyLoss = 0.8;
+  const groundPosition = container.clientHeight - ball.clientHeight / 2 - 35;
+  let animating = false;
+
+  ball.addEventListener("click", function () {
+    if (!animating) {
+      velocity = -15;
+      animating = true;
+      ball.style.cursor = "default";
+      requestAnimationFrame(animate);
+    }
+  });
+
+  function animate() {
+    velocity += gravity;
+    position += velocity;
+
+    if (position > groundPosition) {
+      position = groundPosition;
+
+      velocity = -velocity * energyLoss;
+
+      squeezeBall(velocity);
+    }
+
+    ball.style.top = position + "px";
+
+    const distanceFromGround = groundPosition - position;
+    const shadowScale = Math.max(0.5, 1 - distanceFromGround / 200);
+    const shadowOpacity = Math.max(0.1, 0.3 - distanceFromGround / 1000);
+    shadow.style.transform = `translateX(175px) scale(${shadowScale}, 1)`;
+    shadow.style.opacity = shadowOpacity;
+
+    if (Math.abs(velocity) < 0.5 && Math.abs(position - groundPosition) < 1) {
+      ball.style.transform = "scale(1, 1)";
+      squeezeFactor = 1.0;
+      ball.style.cursor = "pointer";
+      ballClickCount++;
+      animating = false;
+      return;
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  let squeezeFactor = 1.0;
+
+  function squeezeBall() {
+    ball.style.transform = `scale(${1 + 0.2 * squeezeFactor}, ${
+      1 - 0.2 * squeezeFactor
+    })`;
+    squeezeFactor *= 0.7;
+    setTimeout(() => {
+      ball.style.transform = "scale(1, 1)";
+    }, 100);
+  }
+});
+
+const navLinks = document.querySelectorAll(".navbar a");
+const navTitle = document.querySelector(".navbar h2");
+
+navLinks.forEach((link) => {
+  link.addEventListener("click", function (e) {
+    e.preventDefault();
+
+    const targetId = this.textContent.toLowerCase();
+    const targetSection = document.getElementById(targetId);
+
+    if (targetSection) {
+      targetSection.scrollIntoView({
+        behavior: "smooth",
+      });
+      updateNavTitle(this.textContent);
+    }
+  });
+});
+
+function updateNavTitle(newTitle) {
+  navTitle.classList.add("flip-animation");
+
+  setTimeout(() => {
+    navTitle.textContent = newTitle;
+  }, 150);
+
+  setTimeout(() => {
+    navTitle.classList.remove("flip-animation");
+  }, 300);
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  const hamburger = document.querySelector(".hamburger");
+  const navbarLinks = document.querySelector(".navbar-links");
+
+  hamburger.addEventListener("click", function () {
+    hamburger.classList.toggle("active");
+    navbarLinks.classList.toggle("active");
+  });
+
+  navbarLinks.addEventListener("click", function () {
+    hamburger.classList.remove("active");
+    navbarLinks.classList.remove("active");
+  });
+
+  // Close menu when clicking outside
+  document.addEventListener("click", function (event) {
+    if (!event.target.closest(".navbar")) {
+      hamburger.classList.remove("active");
+      navbarLinks.classList.remove("active");
+    }
+  });
+
+  // Keep existing functionality
+  let prevScrollPos = window.pageYOffset;
+  window.onscroll = function () {
+    let currentScrollPos = window.pageYOffset;
+
+    if (prevScrollPos > currentScrollPos) {
+      document.querySelector(".navbar").classList.remove("hidden");
+    } else {
+      document.querySelector(".navbar").classList.add("hidden");
+    }
+    prevScrollPos = currentScrollPos;
+  };
+
+  // Flip animation on hover
+  const navbarHeader = document.querySelector(".navbar h2");
+  navbarHeader.addEventListener("mouseenter", function () {
+    this.classList.add("flip-animation");
+    setTimeout(() => {
+      this.classList.remove("flip-animation");
+    }, 300);
+  });
+});
+
+window.addEventListener("scroll", function () {
+  const scrollPosition = window.scrollY;
+
+  document.querySelectorAll("section").forEach((section) => {
+    const sectionTop = section.offsetTop - 100;
+    const sectionBottom = sectionTop + section.offsetHeight;
+
+    if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
+      if (
+        navTitle.textContent !==
+        section.id.charAt(0).toUpperCase() + section.id.slice(1)
+      ) {
+        updateNavTitle(
+          section.id.charAt(0).toUpperCase() + section.id.slice(1)
+        );
+      }
+    }
+  });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  const container = document.querySelector(".image-container");
+  const backdrop = document.querySelector(".hover-backdrop");
+
+  if (container && backdrop && window.innerWidth > 768) {
+    container.addEventListener("mousemove", function (e) {
+      const rect = container.getBoundingClientRect();
+      const x = e.clientX - rect.left; // x position within the element
+      const y = e.clientY - rect.top; // y position within the element
+
+      // Calculate skew based on mouse position
+      // -15 to 15 degrees range
+      const skewX = ((y / rect.height) * 10 - 5).toFixed(1);
+      const skewY = ((x / rect.width) * 10 - 5).toFixed(1);
+
+      // Apply the transformation
+      backdrop.style.transform = `translate(-50%, -50%) skew(${skewX}deg, ${skewY}deg)`;
+    });
+
+    // Reset transform when mouse leaves
+    container.addEventListener("mouseleave", function () {
+      backdrop.style.transform = "translate(-50%, -50%)";
+    });
+  }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  const heading = document.querySelector(".typing-animation");
+  const text = "Hi, I'm Chanuka Lakshan.";
+
+  // Clear any existing content
+  heading.innerHTML = "";
+
+  // Create spans for each character
+  for (let i = 0; i < text.length; i++) {
+    const span = document.createElement("span");
+    span.textContent = text[i];
+    heading.appendChild(span);
+  }
+
+  // Get all spans
+  const spans = heading.querySelectorAll("span");
+
+  // Animate each span with staggered delays
+  spans.forEach((span, index) => {
+    // Set a delay based on the index
+    const delay = index * 0.07; // 70ms between each character
+    span.style.animationDelay = `${delay}s`;
+  });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  const leftRoles = [
+    "Blogger",
+    "Backend Engineer",
+    "Creator",
+    "Full Stack Developer",
+    "Trainer",
+  ];
+  const rightRoles = [
+    "Software Developer",
+    "Writer",
+    "Frontend Engineer",
+    "Mentor",
+    "UI/UX Enthusiast",
+  ];
+
+  const roleLeftElement = document.getElementById("roleLeft");
+  const roleRightElement = document.getElementById("roleRight");
+
+  let leftIndex = 0;
+  let rightIndex = 0;
+
+  // Change roles alternately (first left, then right)
+  function changeRoles() {
+    // Change left role
+    setTimeout(() => {
+      flipRole(roleLeftElement, leftRoles, leftIndex);
+      leftIndex = (leftIndex + 1) % leftRoles.length;
+    }, 0);
+
+    // Change right role after a delay
+    setTimeout(() => {
+      flipRole(roleRightElement, rightRoles, rightIndex);
+      rightIndex = (rightIndex + 1) % rightRoles.length;
+    }, 4000);
+  }
+
+  // Flip animation for role change
+  function flipRole(element, roles, currentIndex) {
+    // Flip out current role
+    element.classList.add("flip-out");
+
+    // Wait for flip out animation to complete
+    setTimeout(() => {
+      // Update text
+      element.textContent = roles[(currentIndex + 1) % roles.length];
+
+      // Remove flip out class and add flip in
+      element.classList.remove("flip-out");
+      element.classList.add("flip-in");
+
+      // Clean up after animation completes
+      setTimeout(() => {
+        element.classList.remove("flip-in");
+      }, 600);
+    }, 600);
+  }
+
+  // Start the cycle
+  changeRoles();
+
+  // Set interval to continue changing roles
+  setInterval(changeRoles, 8000);
+});
+
+const projectsData = [
+  {
+    id: 1,
+    title: "Throttle Policy Reset Support for WSO2 API Manager",
+    description:
+      "Application Owners can reset their application throttle policies for a specific user upon their request and enable further API invocations without waiting for the throttling time period to expire.",
+    image: "/images/m-apimanager.png",
+    demoUrl: "https://medium.com/@chanukachandrayapa/introducing-application-throttle-policy-reset-support-for-wso2-api-manager-75385dce18b2",
+    githubUrl: "https://github.com/wso2/api-manager/issues/2455",
+  },
+  {
+    id: 2,
+    title: "Mental Bloom",
+    description:
+      "Comprehensive digital mental health assistance platform designed to provide accessible, personalized, and secure mental health support to users, specifically tailored to the Sri Lankan context. By leveraging a microservices architecture, the platform delivers features like mood tracking, educational resources, support forums, therapist access, and crisis intervention tools.",
+    image: "/images/m-bloom.png",
+    demoUrl: "https://mental-health-rq0b.onrender.com/",
+    githubUrl: "https://github.com/Chanuka-ChandraYapa/mental-health",
+  },
+  {
+    id: 3,
+    title: "Advizor",
+    description:
+      "The Newspaper Advertisement Analyzer is a powerful tool designed to simplify the process of extracting valuable information from newspaper advertisements. It uses state-of-the-art technologies including Optical Character Recognition (OCR), Natural Language Processing (NLP), and data visualization to transform unstructured newspaper ads into structured data for analysis and insights.",
+    image: "/images/m-newspaper.png",
+    demoUrl: "https://www.youtube.com/watch?v=yQBUdrFqWPE&t=1s",
+    githubUrl: "https://github.com/Newspaper-Advertisement-Analyzer/client",
+  },
+  {
+    id: 4,
+    title: "B Airways",
+    description:
+      "This is a detailed description of Project 4. You can include information about the technologies used, challenges faced, and solutions implemented. This text will appear in the modal when someone clicks on the project tile.",
+    image: "/images/m-airways.png",
+    demoUrl: "https://www.pixelthoughts.co",
+    githubUrl: "https://github.com/Chanuka-ChandraYapa/AirLine_Reservation_System_Project",
+  },
+  {
+    id: 5,
+    title: "IntelliNotes",
+    description:
+      "IntelliNotes is a Flutter-based notes application that integrates AI assistance to help users manage their notes efficiently. The app allows users to write, view, and store notes, and it also leverages AI-powered responses to summarize, analyze, and offer insightful suggestions based on the content of the notes. By interacting with an AI model (such as Hugging Face's Mistral-7B), IntelliNotes makes your note-taking experience more engaging and productive by providing personalized assistance based on the notes you've written.",
+    image: "/images/m-cover.png",
+    demoUrl: "https://github.com/Chanuka-ChandraYapa/IntelliNotes/releases/tag/v1.0.0-alpha",
+    githubUrl: "https://github.com/Chanuka-ChandraYapa/IntelliNotes",
+  },
+  {
+    id: 6,
+    title: "BuyGenix",
+    description:
+      "BuyGenix is a groundbreaking platform designed to redefine the e-commerce experience with the power of AI. By introducing the concept of machine customers, this project aims to enable automated AI agents to shop on behalf of users. These intelligent agents autonomously evaluate products, compare deals, and make data-driven purchasing decisions, mimicking human shopping behavior efficiently and intelligently.",
+    image: "/images/m-ai.png",
+    demoUrl: "https://www.pixelthoughts.co",
+    githubUrl: "https://github.com/Chanuka-ChandraYapa/Machine_Customer",
+  },
+  {
+    id: 7,
+    title: "SpaceXplore",
+    description:
+      "A futuristic Ticket booking system for intergalactic space travel. This project aims to provide a seamless experience for users to book tickets for space travel, explore different planets, and learn about the universe. By leveraging cutting-edge technologies and a user-friendly interface, SpaceXplore offers a unique and engaging experience for space enthusiasts and travelers.",
+    image: "/images/space.png",
+    demoUrl: "https://youtu.be/ugA05Q1QZcQ?si=2LxR0h1uuneV7Zx7",
+    githubUrl: "https://github.com/Chanuka-ChandraYapa/Kode-Blitz_SpaceXplore",
+  },
+  {
+    id: 8,
+    title: "MediBox",
+    description:
+      "Micro-Controller based project which serves patients to get medicine at relevant time and store them safely. Micro Controller used was ESP32. Main functionalities were setting alarms, storing medicine, monitoring Light Intensity, Humidity, and temperature, and controlling it over Wi-Fi",
+    image: "/images/medibox.png",
+    demoUrl: "https://wokwi.com/projects/359326661538125825",
+    githubUrl: "https://github.com/Chanuka-ChandraYapa/Medi-Box",
+  },
+];
+
+const modalOverlay = document.getElementById("projectModal");
+const modalClose = document.querySelector(".modal-close");
+const modalTitle = document.getElementById("modalTitle");
+const modalDescription = document.getElementById("modalDescription");
+const modalImage = document.querySelector(".modal-image");
+const demoLink = document.getElementById("demoLink");
+const githubLink = document.getElementById("githubLink");
+
+document.querySelectorAll(".project-tile").forEach((tile, index) => {
+  tile.addEventListener("click", function (e) {
+    e.preventDefault();
+    openProjectModal(index);
+  });
+});
+
+function openProjectModal(index) {
+  const project = projectsData[index];
+
+  modalTitle.textContent = project.title;
+  modalDescription.textContent = project.description;
+  modalImage.style.backgroundImage = `url('${project.image}')`;
+  demoLink.href = project.demoUrl;
+  githubLink.href = project.githubUrl;
+
+  modalOverlay.classList.add("active");
+
+  document.body.style.overflow = "hidden";
+}
+
+modalClose.addEventListener("click", closeModal);
+modalOverlay.addEventListener("click", function (e) {
+  if (e.target === modalOverlay) {
+    closeModal();
+  }
+});
+
+function closeModal() {
+  modalOverlay.classList.remove("active");
+  document.body.style.overflow = "auto";
+}
+
+document.addEventListener("keydown", function (e) {
+  if (e.key === "Escape" && modalOverlay.classList.contains("active")) {
+    closeModal();
+  }
+});
+
+const board = document.getElementById("board");
+const cells = document.querySelectorAll(".cell");
+const modal = document.getElementById("modal2");
+const openModalButton = document.getElementById("openModal2");
+const closeModalButton = document.getElementById("closeModal2");
+
+let currentPlayer = "X";
+let gameActive = true;
+
+const winningCombinations = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+  [0, 4, 8],
+  [2, 4, 6],
+];
+
+function checkWin() {
+  return winningCombinations.some((combination) => {
+    return combination.every((index) => {
+      return cells[index].textContent === currentPlayer;
+    });
+  });
+}
+
+function checkDraw() {
+  return [...cells].every((cell) => {
+    return cell.textContent === "X" || cell.textContent === "O";
+  });
+}
+
+function computerMove() {
+  if (!gameActive) return;
+
+  let availableCells = [...cells].filter((cell) => cell.textContent === "");
+  if (availableCells.length > 0) {
+    const randomCell =
+      availableCells[Math.floor(Math.random() * availableCells.length)];
+    randomCell.textContent = "O";
+    randomCell.classList.add("O");
+
+    if (checkWin()) {
+      alert("O wins!");
+      gameActive = false;
+    } else if (checkDraw()) {
+      alert("Draw!");
+      gameActive = false;
+    } else {
+      currentPlayer = "X";
+    }
+  }
+}
+
+function handleCellClick(event) {
+  if (!gameActive) return;
+
+  const cell = event.target;
+  if (cell.textContent === "") {
+    cell.textContent = currentPlayer;
+    cell.classList.add(currentPlayer);
+
+    if (checkWin()) {
+      alert(`${currentPlayer} wins!`);
+      gameActive = false;
+    } else if (checkDraw()) {
+      alert("Draw!");
+      gameActive = false;
+    } else {
+      currentPlayer = "O";
+      setTimeout(computerMove, 500);
+    }
+  }
+}
+
+function resetGame() {
+  cells.forEach((cell) => {
+    cell.textContent = "";
+    cell.classList.remove("X", "O");
+  });
+  currentPlayer = "X";
+  gameActive = true;
+}
+
+const ball = document.querySelector(".ball");
+const bubble = document.querySelector(".bubble");
+
+function showBubble() {
+  bubble.style.display = "block";
+  bubble.style.opacity = "1";
+  bubble.style.transform = "translateY(0)";
+}
+
+function hideBubble() {
+  bubble.style.opacity = "0";
+  bubble.style.transform = "translateY(20px)";
+  setTimeout(() => {
+    bubble.style.display = "none";
+  }, 300);
+}
+function changeColors() {
+  document.documentElement.style.setProperty("--primary", "#3cb371");
+  document.documentElement.style.setProperty("--secondary", "#a5d6a7");
+  document.documentElement.style.setProperty("--background", "#e0f7fa");
+  // document.documentElement.style.setProperty('--text-color', '#2c3e50');
+}
+
+ball.addEventListener("click", function () {
+  //   ballClickCount++;
+  console.log(ballClickCount);
+  if (ballClickCount > 3) {
+    showBubble();
+  }
+  if (ballClickCount > 4) {
+    hideBubble();
+  }
+  if (ballClickCount > 5) {
+    changeColors();
+  }
+  if (ballClickCount > 10) {
+    modal.classList.add("active");
+    resetGame();
+    ballClickCount = 0;
+  }
+});
+
+openModalButton.addEventListener("click", () => {
+  modal.classList.add("active");
+  resetGame();
+});
+
+closeModalButton.addEventListener("click", () => {
+  modal.classList.remove("active");
+});
+
+modal.addEventListener("click", (event) => {
+  if (event.target === modal) {
+    modal.classList.remove("active");
+  }
+});
+
+cells.forEach((cell) => {
+  cell.addEventListener("click", handleCellClick);
+});

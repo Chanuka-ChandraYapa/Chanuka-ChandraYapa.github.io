@@ -1082,6 +1082,19 @@
     font-size: 2.5rem;
 }
 
+.blog-head {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.blog-cat {
+    width: 100px;
+        height: auto;
+        margin-left: 10px;
+        /* margin: -50px 0 0 -100px; */
+  }
+
 .cards-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));

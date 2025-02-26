@@ -754,3 +754,58 @@ document.addEventListener('DOMContentLoaded', function() {
     // You can also provide a custom username through the UI if needed
     // For example, adding a form to let users enter their Medium username
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Get the span containing the cat image
+    const catSpan = document.querySelector('.blog-head span');
+    const blogHead = document.querySelector('.blog-head');
+    const originalText = blogHead.childNodes[0].textContent; // Store the original "Blogs" text
+    
+    // Add click event to the cat image span
+    catSpan.addEventListener('click', function() {
+
+        // Check if input is already present
+        if (!document.querySelector('#nameInput')) {
+            // Create an input element
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.id = 'nameInput';
+            input.placeholder = 'Your medium username';
+            input.style.marginRight = '10px';
+            input.style.padding = '5px';
+            input.style.borderRadius = '4px';
+            input.style.border = '1px solid #ccc';
+            input.style.fontSize = '16px';
+            
+            // Insert the input before the text
+            blogHead.insertBefore(input, blogHead.firstChild);
+            
+            // Focus on the input field
+            input.focus();
+            
+            // Add event listener for the Enter key
+            input.addEventListener('keyup', function(event) {
+                if (event.key === 'Enter') {
+                    const userName = input.value.trim();
+                    if (userName) {
+                        // Update the heading text
+                        blogHead.firstChild.textContent = '';
+                        // blogHead.insertBefore(document.createTextNode(userName + "'s Blogs"), catSpan);
+                        
+                        // Remove the input field
+                        input.remove();
+                        
+                        // Fetch that user's Medium articles (if applicable)
+                        fetchMediumArticles('@' + userName.toLowerCase().replace(/\s+/g, ''));
+                    } else {
+                        // If empty input, revert to original
+                        input.remove();
+                        blogHead.insertBefore(document.createTextNode(originalText), catSpan);
+                    }
+                }
+            });
+        }
+    });
+});
+

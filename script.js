@@ -292,6 +292,64 @@ document.addEventListener("DOMContentLoaded", function () {
   setInterval(changeRoles, 8000);
 });
 
+
+        // Function to close the modal
+function closeConstructModal() {
+            document.getElementById('constructionModal').style.display = 'none';
+        }
+
+setTimeout(function() {
+            document.getElementById('constructionModal').style.display = 'flex';
+        }, 5000);
+
+        // Create animated construction GIF programmatically
+        const canvas = document.createElement('canvas');
+        canvas.width = 200;
+        canvas.height = 150;
+        const ctx = canvas.getContext('2d');
+        
+        // Simple construction animation
+        let frame = 0;
+        function drawFrame() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Background
+            ctx.fillStyle = '#ffdd00';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Construction barrier stripes
+            const stripeHeight = 20;
+            const numStripes = Math.ceil(canvas.height / (stripeHeight * 2));
+            
+            for(let i = 0; i < numStripes; i++) {
+                ctx.fillStyle = '#000000';
+                ctx.fillRect(0, i * stripeHeight * 2 + Math.sin(frame/10 + i) * 5, canvas.width, stripeHeight);
+            }
+            
+            // Construction icon
+            ctx.fillStyle = '#ff4400';
+            ctx.beginPath();
+            ctx.arc(100, 75 + Math.sin(frame/5) * 3, 30, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 30px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('⚠️', 100, 75);
+            
+            frame++;
+            
+            // Update image source with new frame
+            const gif = document.querySelector('.construction-gif');
+            gif.src = canvas.toDataURL();
+            
+            setTimeout(drawFrame, 50);
+        }
+        
+        // Start animation when page loads
+        window.onload = drawFrame;
+
 const projectsData = [
   {
     id: 1,

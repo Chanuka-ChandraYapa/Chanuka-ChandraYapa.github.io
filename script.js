@@ -618,3 +618,139 @@ modal.addEventListener("click", (event) => {
 cells.forEach((cell) => {
   cell.addEventListener("click", handleCellClick);
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('mousemove', function(e) {
+        document.querySelectorAll('.card').forEach(card => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            card.style.setProperty('--mouse-x', x + 'px');
+            card.style.setProperty('--mouse-y', y + 'px');
+        });
+    });
+});
+
+// Function to format date
+function formatDate(dateString) {
+    const options = { year: 'numeric', month: 'short', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+}
+
+// Function to estimate reading time (rough estimate)
+function calculateReadingTime(text) {
+    const wordsPerMinute = 200;
+    const words = text.trim().split(/\s+/).length;
+    const minutes = Math.ceil(words / wordsPerMinute);
+    return minutes + ' min read';
+}
+
+// Function to create article cards
+function createArticleCard(article) {
+    const card = document.createElement('div');
+    card.className = 'card';
+    
+    // Create image placeholder or use article image if available
+    const imageUrl = article.thumbnail || `/api/placeholder/600/400`;
+    
+    card.innerHTML = `
+        <img src="${imageUrl}" alt="${article.title}" class="card-img">
+        <div class="card-content">
+            <h2 class="card-title">${article.title}</h2>
+            <p class="card-excerpt">${article.excerpt || 'No excerpt available'}</p>
+            <div class="card-meta">
+                <span class="card-date">${formatDate(article.pubDate)}</span>
+                <span class="card-reading-time">${calculateReadingTime(article.description || article.excerpt || article.title)}</span>
+            </div>
+        </div>
+        <a href="${article.link}" target="_blank" class="card-link">Read More</a>
+    `;
+    
+    return card;
+}
+
+// Function to fetch Medium articles using RSS to JSON converter
+async function fetchMediumArticles(username = '@medium') {
+    const container = document.getElementById('articlesContainer');
+    container.innerHTML = '<div class="loading">Loading articles...</div>';
+    
+    try {
+        // Use RSS to JSON API to fetch Medium feed
+        // Replace 'yourusername' with your actual Medium username
+        const response = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/${username}`);
+        const data = await response.json();
+        
+        if (data.status === 'ok') {
+            container.innerHTML = '';
+            
+            data.items.forEach(article => {
+                // Extract thumbnail image from content if available
+                const imgRegex = /<img[^>]+src="([^">]+)"/;
+                const match = article.content.match(imgRegex);
+                if (match) {
+                    article.thumbnail = match[1];
+                }
+                
+                // Extract excerpt
+                const div = document.createElement('div');
+                div.innerHTML = article.content;
+                const text = div.textContent || div.innerText || '';
+                article.excerpt = text.substring(0, 150) + '...';
+                
+                const card = createArticleCard(article);
+                container.appendChild(card);
+            });
+        } else {
+            throw new Error('Could not fetch articles');
+        }
+    } catch (error) {
+        console.error('Error fetching articles:', error);
+        container.innerHTML = `<div class="error">Error loading articles. Please try again later.</div>`;
+    }
+}
+
+// Function to handle mouse movement for skew effect
+document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('mousemove', function(e) {
+        document.querySelectorAll('.card').forEach(card => {
+            const rect = card.getBoundingClientRect();
+            
+            // Calculate mouse position relative to the card center
+            const cardCenterX = rect.left + rect.width / 2;
+            const cardCenterY = rect.top + rect.height / 2;
+            
+            // Calculate the distance from center (normalize to -1 to 1)
+            const rotateY = -((e.clientX - cardCenterX) / (rect.width / 2)) * 10; // Max 10 degrees
+            const rotateX = ((e.clientY - cardCenterY) / (rect.height / 2)) * 10; // Max 10 degrees
+            
+            // Only apply effect when hovering over the card
+            if (
+                e.clientX > rect.left && 
+                e.clientX < rect.right && 
+                e.clientY > rect.top && 
+                e.clientY < rect.bottom
+            ) {
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            } else {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+            }
+        });
+    });
+    
+    // Reset card position when mouse leaves
+    document.querySelectorAll('.card').forEach(card => {
+        card.addEventListener('mouseleave', function() {
+            card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+        });
+    });
+});
+
+// Call function when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Replace '@medium' with your Medium username (e.g., '@yourusername')
+    fetchMediumArticles('@chanukachandrayapa');
+    
+    // You can also provide a custom username through the UI if needed
+    // For example, adding a form to let users enter their Medium username
+});

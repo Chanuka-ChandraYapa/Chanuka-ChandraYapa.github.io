@@ -997,7 +997,7 @@
     }
   }
 
-  button {
+  .ticbutton {
     padding: 10px 20px;
     font-size: 1.2em;
     cursor: pointer;
@@ -1005,9 +1005,10 @@
     color: white;
     border: none;
     border-radius: 5px;
+    display: none;
 }
 
-button:hover {
+.ticbutton:hover {
     background-color: #0056b3;
 }
 
@@ -1067,4 +1068,128 @@ button:hover {
 
 .cell.O {
     color: var(--secondary);
+}
+
+.blog-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.blog-container h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: var(--text);
+    font-size: 2.5rem;
+}
+
+.cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+}
+
+.card {
+    position: relative;
+    background: var(--secondary);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    height: auto; /* Changed from fixed height to auto */
+    min-height: 380px;
+    transform-style: preserve-3d;
+    transform: perspective(1000px);
+    display: flex;
+    flex-direction: column;
+}
+
+.card:hover {
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+.card-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.card-content {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.card-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--primary);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.card-excerpt {
+    font-size: 14px;
+    color: var(--text);
+    margin-bottom: 15px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    flex-grow: 1;
+}
+
+.card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--text);
+    margin-bottom: 15px;
+}
+
+.card-date {
+    font-style: italic;
+}
+
+.card-reading-time {
+    background: var(--background);
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.card-link {
+    position: relative; /* Changed from absolute to relative */
+    align-self: flex-end;
+    background: var(--accent);
+    color: var(--secondary);
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background 0.3s ease;
+    margin-top: auto;
+    display: inline-block;
+}
+
+.card-link:hover {
+    background: #000;
+}
+
+.loading {
+    text-align: center;
+    padding: 40px;
+    font-size: 18px;
+    color: #757575;
+}
+
+.error {
+    text-align: center;
+    padding: 40px;
+    font-size: 18px;
+    color: #e53935;
 }

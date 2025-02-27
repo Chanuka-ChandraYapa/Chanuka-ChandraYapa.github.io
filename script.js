@@ -233,13 +233,11 @@ document.addEventListener("DOMContentLoaded", function () {
     "Backend Engineer",
     "Creator",
     "Full Stack Developer",
-    "Trainer",
   ];
   const rightRoles = [
     "Software Developer",
     "Writer",
     "Frontend Engineer",
-    "Mentor",
     "UI/UX Enthusiast",
   ];
 

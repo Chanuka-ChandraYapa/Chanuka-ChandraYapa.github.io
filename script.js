@@ -835,7 +835,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Close modal when clicking outside of it
   window.addEventListener('click', (e) => {
-    if (e.target === modal) {
+    if (e.target === moviemodal) {
       moviemodal.style.display = 'none';
     }
   });
@@ -845,7 +845,6 @@ document.addEventListener('DOMContentLoaded', () => {
   movieInput.addEventListener('keyup', (e) => {
     if (e.key === 'Enter') {
       searchMovie();
-      moviemodal.style.display = 'none';
     }
   });
 
@@ -959,7 +958,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Close modal and show success
     loading.style.display = 'none';
     setTimeout(() => {
-      modal.style.display = 'none';
+      moviemodal.style.display = 'none';
     }, 1000);
   }
 
@@ -1015,3 +1014,314 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Sample data - replace with your actual experience and education
+  const timelineData = [
+      {
+          date: '2023-Present',
+          title: 'Teaching Assistant',
+          location: 'University of Moratuwa | Sri Lanka',
+          description: 'Woriking as a Teaching Assistant for the course "Programming Languages" for the 3rd year undergraduates.'
+      },
+      {
+          date: 'Dec 2023',
+          title: 'Intern Software Engineer',
+          location: 'WSO2 LLC | Colombo, Sri Lanka',
+          description: 'Completed a six-month internship with the APIM team of WSO2. Implemented Throttle Policy Reset support feature for WSO2 API Manager.'
+      },
+      {
+        date: '2021-Present',
+        title: 'Undergraduate, B.Sc. Engineering (Hons) (Computer Science & Engineering)',
+        location: 'University of Moratuwa | Sri Lanka',
+        description: 'Maintained a CGPA of 3.89. Dean’s list in 5 semesters'
+      },
+      {
+        date: '2016-2019',
+        title: 'G.C.E Advanced Level Examination',
+        location:'Bandarawela Central College | Bandarawela, Sri Lanka',
+        description: 'Followed Physical Sciences stream and got a Z-Score of 2.3999 '
+    }
+  ];
+
+  const timelineNodesContainer = document.getElementById('timeline-nodes-container');
+  const timelineSection = document.getElementById('experience');
+  
+  // Function to create timeline nodes
+  function createTimelineNodes() {
+      timelineData.forEach((item, index) => {
+          const node = document.createElement('div');
+          node.className = 'timeline-node';
+          node.setAttribute('data-index', index);
+          
+          node.innerHTML = `
+              <div class="timeline-date">
+                  <div class="timeline-dot"></div>
+                  <div class="timeline-date-text">${item.date}</div>
+              </div>
+              <div class="timeline-content">
+                  <h3 class="timeline-content-title">${item.title}</h3>
+                  <h3 class="timeline-content-location">${item.location}</h3>
+                  <p class="timeline-content-description">${item.description}</p>
+              </div>
+          `;
+          
+          timelineNodesContainer.appendChild(node);
+      });
+  }
+  
+  // Generate the timeline nodes
+  createTimelineNodes();
+
+  // Function to scroll the timeline section to the top or bottom of the screen
+  let isUserScrolling = false;
+  let isScrollTimeout;
+
+  function scrollTimelineSection() {
+    if (isUserScrolling) return;
+
+    const rect = timelineSection.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+
+    if (rect.top >= 0 && rect.top <= windowHeight * 0.5) {
+      window.scrollTo({
+        top: window.scrollY + rect.top,
+        behavior: 'smooth',
+      });
+    } 
+    else if (rect.top > windowHeight * 0.5 && rect.top <= windowHeight) {
+      window.scrollTo({
+        top: window.scrollY + rect.top - windowHeight,
+        behavior: 'smooth',
+      });
+    }
+
+    if (rect.bottom > windowHeight * 0.5 && rect.bottom <= windowHeight) {
+      window.scrollTo({
+        top: window.scrollY + rect.top,
+        behavior: 'smooth',
+      });
+    } 
+  }
+
+  // Detect user scrolling
+  window.addEventListener('scroll', () => {
+    isUserScrolling = true;
+    clearTimeout(isScrollTimeout);
+    isScrollTimeout = setTimeout(() => {
+      isUserScrolling = false;
+      scrollTimelineSection();
+    }, 100);
+  });
+
+  // Add scroll event listener to handle timeline section scroll
+  window.addEventListener('scroll', scrollTimelineSection);
+  
+  let nodes = document.querySelectorAll('.timeline-node');
+  const nodeHeight = 200; // Approximate height of each node including margin
+  let currentNodeIndex = 0;
+  let isScrollingTimeline = false;
+  let isTimelineSectionActive = false;
+  let lastScrollTime = 0;
+  let startY = 0;
+  let scrollTimeout;
+  let lastWheelDirection = 0;
+  
+  // Initialize timeline and set first node as active
+  function initializeTimeline() {
+      updateActiveNode(0);
+      nodes[0].classList.add('active', 'animated');
+  }
+  
+  // Update the active node with smooth animation
+  function updateActiveNode(index) {
+      nodes.forEach((node, i) => {
+          node.classList.remove('active', 'animated');
+      });
+      
+      setTimeout(() => {
+          nodes[index].classList.add('active', 'animated');
+      }, 50);
+      
+      currentNodeIndex = index;
+      
+      // Calculate position to scroll to
+      const scrollPosition = index * nodeHeight;
+      timelineNodesContainer.style.transform = `translateY(-${scrollPosition}px)`;
+      timelineNodesContainer.style.transition = 'transform 0.5s ease';
+  }
+  
+  // Main scroll handler
+  function handleScroll(event) {
+      const now = Date.now();
+      if (now - lastScrollTime < 1000) return; // Throttle scrolling events
+      lastScrollTime = now;
+      
+      // If we're not in the timeline section, don't intercept scrolling
+      if (!isTimelineSectionActive) return;
+      
+      // Get scroll direction
+      const delta = event.deltaY || (startY - event.touches?.[0].clientY) || 0;
+      const direction = delta > 0 ? 1 : -1;
+      
+      // Only process if we have a clear direction
+      if (direction === 0) return;
+      
+      // Calculate new index
+      let newIndex = currentNodeIndex + direction;
+      
+      // Check boundaries for allowing page scroll
+      if (newIndex < 0) {
+          // We're at the first node and trying to scroll up
+          // Allow regular page scrolling
+          isScrollingTimeline = false;
+          return;
+      } else if (newIndex >= nodes.length) {
+          // We're at the last node and trying to scroll down
+          // Allow regular page scrolling
+          isScrollingTimeline = false;
+          return;
+      }
+      
+      // We're within timeline boundaries, intercept the scroll
+      event.preventDefault();
+      isScrollingTimeline = true;
+      
+      // Update to new active node
+      updateActiveNode(newIndex);
+      
+      // Reset scrolling flag after animation
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+          isScrollingTimeline = false;
+      }, 1000);
+  }
+  
+  // Wheel event handler
+  function handleWheel(event) {
+      if (!isTimelineSectionActive) return;
+      
+      // Determine if we should intercept this event
+      const direction = event.deltaY > 0 ? 1 : -1;
+      
+      // If we're at bounds, don't intercept
+      if ((currentNodeIndex === 0 && direction === -1) || 
+          (currentNodeIndex === nodes.length - 1 && direction === 1)) {
+          return;
+      }
+      
+      // Prevent default to stop page scroll
+      event.preventDefault();
+      handleScroll(event);
+  }
+  
+  // Touch handlers for mobile
+  function handleTouchStart(event) {
+      if (!isTimelineSectionActive) return;
+      startY = event.touches[0].clientY;
+  }
+  
+  function handleTouchMove(event) {
+      if (!isTimelineSectionActive || isScrollingTimeline) return;
+      
+      const currentY = event.touches[0].clientY;
+      const difference = startY - currentY;
+      
+      // Only handle significant touch movements
+      if (Math.abs(difference) > 30) {
+          const syntheticEvent = {
+              deltaY: difference,
+              preventDefault: () => {
+                  event.preventDefault();
+              }
+          };
+          handleScroll(syntheticEvent);
+          startY = currentY;
+      }
+  }
+
+  // Add click event listener to timeline nodes
+  nodes.forEach((node, index) => {
+    node.addEventListener('click', () => {
+      updateActiveNode(index);
+    });
+  });
+  
+  // Intersection Observer to detect when timeline section is in view
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        // Disable navbar
+        document.querySelector(".navbar").classList.add("hidden");
+
+        // Check if the mouse or touch is within the timeline section
+        document.addEventListener('mousemove', (e) => {
+          const rect = timelineSection.getBoundingClientRect();
+          if (e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom) {
+            isTimelineSectionActive = true;
+          } else {
+            isTimelineSectionActive = false;
+          }
+        });
+
+        document.addEventListener('touchmove', (e) => {
+          const touch = e.touches[0];
+          const rect = timelineSection.getBoundingClientRect();
+          if (touch.clientX >= rect.left && touch.clientX <= rect.right && touch.clientY >= rect.top && touch.clientY <= rect.bottom) {
+            isTimelineSectionActive = true;
+          } else {
+            isTimelineSectionActive = false;
+          }
+        });
+      } else {
+        isTimelineSectionActive = false;
+        // Enable navbar
+        document.querySelector(".navbar").classList.remove("hidden");
+      }
+    });
+  }, { threshold: 0.2 });
+
+  sectionObserver.observe(timelineSection);
+  
+  // Event listeners
+  window.addEventListener('wheel', handleWheel, { passive: false });
+  timelineSection.addEventListener('touchstart', handleTouchStart, { passive: true });
+  timelineSection.addEventListener('touchmove', handleTouchMove, { passive: false });
+  
+  // Initialize the timeline
+  initializeTimeline();
+  
+  // Public API to add new nodes dynamically
+  window.addTimelineNode = function(date, title, description) {
+      // Add to data array
+      timelineData.push({
+          date,
+          title,
+          description
+      });
+      
+      // Create and append new node
+      const newIndex = timelineData.length - 1;
+      const node = document.createElement('div');
+      node.className = 'timeline-node';
+      node.setAttribute('data-index', newIndex);
+      
+      node.innerHTML = `
+          <div class="timeline-date">
+              <div class="timeline-dot"></div>
+              <div class="timeline-date-text">${date}</div>
+          </div>
+          <div class="timeline-content">
+              <h3 class="timeline-content-title">${title}</h3>
+              <p class="timeline-content-description">${description}</p>
+          </div>
+      `;
+      
+      timelineNodesContainer.appendChild(node);
+      
+      // Update nodes array
+      nodes = document.querySelectorAll('.timeline-node');
+      
+      return newIndex;
+  };
+});

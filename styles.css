@@ -1206,3 +1206,79 @@
     font-size: 18px;
     color: #e53935;
 }
+
+.movie-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  
+  .movie-modal-content {
+    background-color: var(--accent);
+    opacity: 0.8;
+    margin: 15% auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    /* max-width: 500px; */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .movie-close {
+    color: var(--secondary);
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .movie-close:hover,
+  .movie-close:focus {
+    color: var(--primary);
+    text-decoration: none;
+  }
+  
+  .movie-input-group {
+    margin: 30px;
+  }
+  
+  .movie-input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+  }
+  
+  .movie-input-group input {
+    width: 100%;
+    padding: 10px;
+    /* border: 1px solid #ccc; */
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+  }
+  
+  .movie-input-group button {
+    display: none;
+    margin-left: 10px;
+    padding: 10px 15px;
+    background-color: var(--secondary);
+    color: var(--text);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .movie-loading, .movie-error {
+    text-align: center;
+    margin: 10px 0;
+    display: none;
+  }
+  
+  .movie-error {
+    color: #e74c3c;
+  }

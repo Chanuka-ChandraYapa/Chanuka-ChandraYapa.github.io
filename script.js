@@ -581,17 +581,20 @@ function changeColors() {
   // document.documentElement.style.setProperty('--text-color', '#2c3e50');
 }
 
+const moviemodal = document.getElementById('themeModal');
+
 ball.addEventListener("click", function () {
   //   ballClickCount++;
   console.log(ballClickCount);
-  if (ballClickCount > 3) {
+  if (ballClickCount == 3) {
     showBubble();
   }
-  if (ballClickCount > 4) {
+  if (ballClickCount == 4) {
     hideBubble();
   }
-  if (ballClickCount > 5) {
-    changeColors();
+  if (ballClickCount == 5) {
+    // changeColors();
+    moviemodal.style.display = 'block';
   }
   if (ballClickCount > 10) {
     modal.classList.add("active");
@@ -807,5 +810,210 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Modal elements
+  const moviemodal = document.getElementById('themeModal');
+  const openBtn = document.getElementById('openThemeModal');
+  const closeBtn = document.querySelector('.movie-close');
+  const movieInput = document.getElementById('movieInput');
+  const searchBtn = document.getElementById('movie-searchBtn');
+  const loading = document.getElementById('movie-loading');
+  const error = document.getElementById('movie-error');
+
+  // API Key for OMDb
+  const apiKey = '16532318';
+
+  // Open modal when button is clicked
+  openBtn.addEventListener('click', () => {
+    moviemodal.style.display = 'block';
+  });
+
+  // Close modal when X is clicked
+  closeBtn.addEventListener('click', () => {
+    moviemodal.style.display = 'none';
+  });
+
+  // Close modal when clicking outside of it
+  window.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      moviemodal.style.display = 'none';
+    }
+  });
+
+  // Handle movie search
+  searchBtn.addEventListener('click', searchMovie);
+  movieInput.addEventListener('keyup', (e) => {
+    if (e.key === 'Enter') {
+      searchMovie();
+      moviemodal.style.display = 'none';
+    }
+  });
+
+  function searchMovie() {
+    const title = movieInput.value.trim();
+    if (!title) return;
+
+    // Reset UI
+    error.style.display = 'none';
+    loading.style.display = 'block';
+
+    // Fetch movie data from OMDb API
+    fetch(`https://www.omdbapi.com/?t=${encodeURIComponent(title)}&apikey=${apiKey}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.Response === 'False') {
+          showError(data.Error || 'Movie not found');
+          return;
+        }
+
+        if (data.Poster === 'N/A') {
+          showError('No poster available for this movie');
+          return;
+        }
+
+        // Create image element to load the poster
+        const posterImg = new Image();
+        posterImg.crossOrigin = 'Anonymous';
+        posterImg.src = data.Poster;
+        posterImg.setAttribute('crossOrigin', '');
+        
+        posterImg.onload = function() {
+          extractDominantColors(posterImg);
+        };
+
+        posterImg.onerror = function() {
+          showError('Could not load movie poster');
+        };
+      })
+      .catch(err => {
+        showError('Error fetching movie data. Please try again.');
+        console.error(err);
+      });
+  }
+
+  function showError(message) {
+    loading.style.display = 'none';
+    error.textContent = message;
+    error.style.display = 'block';
+  }
+
+  function extractDominantColors(imageElement) {
+    // Create a canvas element to draw the image
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Set canvas dimensions to match the image
+    canvas.width = imageElement.naturalWidth;
+    canvas.height = imageElement.naturalHeight;
+    
+    // Draw the image onto the canvas
+    ctx.drawImage(imageElement, 0, 0);
+    
+    // Get image data
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const pixelData = imageData.data;
+    
+    // Store colors and their frequency
+    const colorMap = {};
+    
+    // Sample pixels (skip some pixels for performance on large images)
+    const skipFactor = Math.max(1, Math.floor((canvas.width * canvas.height) / 100000));
+    
+    for (let i = 0; i < pixelData.length; i += 4 * skipFactor) {
+      const r = pixelData[i];
+      const g = pixelData[i + 1];
+      const b = pixelData[i + 2];
+      
+      // Skip very dark or very light colors
+      if ((r + g + b) < 30 || (r + g + b) > 720) continue;
+      
+      // Quantize color to reduce number of unique colors
+      const quantizedR = Math.floor(r / 10) * 10;
+      const quantizedG = Math.floor(g / 10) * 10;
+      const quantizedB = Math.floor(b / 10) * 10;
+      
+      const colorKey = `${quantizedR},${quantizedG},${quantizedB}`;
+      
+      if (colorMap[colorKey]) {
+        colorMap[colorKey].count++;
+      } else {
+        colorMap[colorKey] = {
+          r: quantizedR,
+          g: quantizedG,
+          b: quantizedB,
+          count: 1
+        };
+      }
+    }
+    
+    // Convert to array and sort by frequency
+    const colorArray = Object.values(colorMap);
+    colorArray.sort((a, b) => b.count - a.count);
+    
+    // Get top 4 colors
+    const dominantColors = colorArray.slice(0, 4);
+    
+    // Apply theme immediately
+    applyTheme(dominantColors);
+    
+    // Close modal and show success
+    loading.style.display = 'none';
+    setTimeout(() => {
+      modal.style.display = 'none';
+    }, 1000);
+  }
+
+  function rgbToHex(r, g, b) {
+    return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+  }
+
+  function applyTheme(colors) {
+    if (!colors || colors.length < 4) return;
+    
+    // Calculate text color for contrast
+    const primary = colors[0];
+    const brightness = (primary.r * 299 + primary.g * 587 + primary.b * 114) / 1000;
+    const textColor = brightness > 128 ? '#222' : '#fff';
+    // Check if secondary and accent colors are in the same range
+    const colorDistance = (color1, color2) => {
+      return Math.sqrt(
+      Math.pow(color1.r - color2.r, 2) +
+      Math.pow(color1.g - color2.g, 2) +
+      Math.pow(color1.b - color2.b, 2)
+      );
+    };
+
+    const secondary = colors[1];
+    const accent = colors[2];
+
+    if (colorDistance(secondary, accent) < 100) {
+      // Increase brightness of secondary color
+      secondary.r = Math.min(secondary.r + 60, 255);
+      secondary.g = Math.min(secondary.g + 60, 255);
+      secondary.b = Math.min(secondary.b + 60, 255);
+    }
+
+    function adjustColorDifference(color1, color2, minColorDifference) {
+      const distance = colorDistance(color1, color2);
+      if (distance < minColorDifference) {
+        // Adjust accent color to ensure significant difference
+        color2.r = (color2.r + 100) % 256;
+        color2.g = (color2.g + 100) % 256;
+        color2.b = (color2.b + 100) % 256;
+      }
+    }
+
+    adjustColorDifference(primary, accent, 150);
+    adjustColorDifference(primary,secondary, 30);
+    
+    // Apply colors to CSS variables
+    document.documentElement.style.setProperty('--primary', rgbToHex(colors[0].r, colors[0].g, colors[0].b));
+    document.documentElement.style.setProperty('--secondary', rgbToHex(colors[1].r, colors[1].g, colors[1].b));
+    document.documentElement.style.setProperty('--accent', rgbToHex(colors[2].r, colors[2].g, colors[2].b));
+    document.documentElement.style.setProperty('--background', rgbToHex(colors[3].r, colors[3].g, colors[3].b));
+    document.documentElement.style.setProperty('--text', textColor);
+  }
 });
 

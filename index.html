@@ -5,6 +5,14 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="styles.css">
         <script src="script.js" defer></script>
+        <script async
+            src="https://www.googletagmanager.com/gtag/js?id=G-L824NL0Z1M"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-L824NL0Z1M');
+        </script>
         <title>My Portfolio</title>
     </head>
     <body>
@@ -324,7 +332,8 @@
                         <input type="text" id="movieInput" />
                         <button id="movie-searchBtn">Apply Theme</button>
                     </div>
-                    <div id="movie-loading" class="movie-loading">Loading theme...</div>
+                    <div id="movie-loading" class="movie-loading">Loading
+                        theme...</div>
                     <div id="movie-error" class="movie-error"></div>
                 </div>
             </div>

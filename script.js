@@ -1325,3 +1325,477 @@ document.addEventListener('DOMContentLoaded', function() {
       return newIndex;
   };
 });
+
+// document.addEventListener('DOMContentLoaded', function() {
+//   // Get all form elements
+//   const form = document.querySelector('.portfolio-contact-form');
+//   const inputs = document.querySelectorAll('.portfolio-form-input');
+//   const submitBtn = document.querySelector('.portfolio-submit-btn');
+//   const notification = document.querySelector('.portfolio-notification');
+//   const envelope = document.querySelector('.portfolio-envelope');
+//   const envelopeFlap = document.querySelector('.portfolio-envelope-flap');
+//   const letter = document.querySelector('.portfolio-envelope-letter');
+  
+//   // Function to handle input animations
+//   function setupInputAnimations() {
+//       inputs.forEach(input => {
+//           // Set an initial attribute for styling empty vs filled inputs
+//           input.setAttribute('placeholder', ' ');
+          
+//           // Add focus animations
+//           input.addEventListener('focus', () => {
+//               input.parentElement.classList.add('focused');
+//           });
+          
+//           input.addEventListener('blur', () => {
+//               input.parentElement.classList.remove('focused');
+//           });
+          
+//           // Add interactive animation on input
+//           input.addEventListener('input', () => {
+//               if (input.value.length > 0) {
+//                   const randomDegree = Math.random() * 3 - 1.5;
+//                   envelopeFlap.style.transform = `rotateX(${10 + randomDegree}deg)`;
+//                   setTimeout(() => {
+//                       envelopeFlap.style.transform = '';
+//                   }, 300);
+//               }
+//           });
+//       });
+//   }
+  
+//   // Function to handle form submission
+//   function setupFormSubmission() {
+//       form.addEventListener('submit', function(e) {
+//           e.preventDefault();
+          
+//           // Disable form during submission
+//           inputs.forEach(input => input.disabled = true);
+//           submitBtn.disabled = true;
+          
+//           // Animate the envelope
+//           envelope.style.animation = 'none';
+//           letter.style.animation = 'none';
+          
+//           setTimeout(() => {
+//               envelope.style.animation = 'envelope-send 1.5s ease-in-out forwards';
+//               letter.style.animation = 'letter-send 1s ease-in-out forwards';
+//           }, 10);
+          
+//           // Show success notification after animation
+//           setTimeout(() => {
+//               notification.classList.add('show');
+              
+//               // Reset the form
+//               form.reset();
+//               inputs.forEach(input => input.disabled = false);
+//               submitBtn.disabled = false;
+              
+//               // Reset animations
+//               setTimeout(() => {
+//                   envelope.style.animation = 'envelope-float 6s ease-in-out infinite';
+//                   letter.style.animation = 'letter-bob 7s ease-in-out infinite';
+//               }, 1000);
+              
+//               // Hide notification after a delay
+//               setTimeout(() => {
+//                   notification.classList.remove('show');
+//               }, 4000);
+//           }, 1500);
+//       });
+//   }
+  
+//   // Function to add interactive envelope animations
+//   function setupEnvelopeInteractions() {
+//       // Make envelope interactive on hover
+//       const animationContainer = document.querySelector('.portfolio-animation-container');
+      
+//       animationContainer.addEventListener('mouseenter', () => {
+//           envelopeFlap.style.transform = 'rotateX(60deg)';
+//           letter.style.transform = 'translateY(-25px)';
+//       });
+      
+//       animationContainer.addEventListener('mouseleave', () => {
+//           envelopeFlap.style.transform = '';
+//           letter.style.transform = '';
+//       });
+      
+//       // Add touch events for mobile
+//       animationContainer.addEventListener('touchstart', () => {
+//           envelopeFlap.style.transform = 'rotateX(60deg)';
+//           letter.style.transform = 'translateY(-25px)';
+//       });
+      
+//       animationContainer.addEventListener('touchend', () => {
+//           envelopeFlap.style.transform = '';
+//           letter.style.transform = '';
+//       });
+//   }
+  
+//   // Create dynamic bubbles
+//   function createBubbles() {
+//       const bubblesContainer = document.querySelector('.portfolio-floating-bubbles');
+//       const bubbleCount = window.innerWidth < 768 ? 5 : 8;
+      
+//       // Clear existing bubbles
+//       while (bubblesContainer.firstChild) {
+//           bubblesContainer.removeChild(bubblesContainer.firstChild);
+//       }
+      
+//       // Create new bubbles
+//       for (let i = 0; i < bubbleCount; i++) {
+//           const bubble = document.createElement('div');
+//           bubble.classList.add('portfolio-bubble');
+          
+//           const size = Math.random() * 30 + 10;
+//           const left = Math.random() * 100;
+//           const delay = Math.random() * 5;
+//           const duration = Math.random() * 10 + 10;
+//           const opacity = Math.random() * 0.5 + 0.1;
+          
+//           bubble.style.width = `${size}px`;
+//           bubble.style.height = `${size}px`;
+//           bubble.style.left = `${left}%`;
+//           bubble.style.animationDelay = `${delay}s`;
+//           bubble.style.animationDuration = `${duration}s`;
+//           bubble.style.opacity = opacity;
+//           bubble.style.background = `rgba(248, 177, 51, ${opacity})`;
+          
+//           bubblesContainer.appendChild(bubble);
+//       }
+//   }
+  
+//   // Add email send animation
+//   function addEnvelopeAnimations() {
+//       // Add keyframes dynamically
+//       const style = document.createElement('style');
+//       style.innerHTML = `
+//           @keyframes envelope-send {
+//               0% {
+//                   transform: translateY(0) scale(1) rotate(0);
+//               }
+//               30% {
+//                   transform: translateY(-30px) scale(1.1) rotate(5deg);
+//               }
+//               100% {
+//                   transform: translateY(-200px) scale(0.5) rotate(15deg);
+//                   opacity: 0;
+//               }
+//           }
+          
+//           @keyframes letter-send {
+//               0% {
+//                   transform: translateY(0);
+//               }
+//               20% {
+//                   transform: translateY(-40px);
+//               }
+//               100% {
+//                   transform: translateY(-40px);
+//                   opacity: 0;
+//               }
+//           }
+//       `;
+//       document.head.appendChild(style);
+//   }
+  
+//   // Handle window resize
+//   function handleResize() {
+//       window.addEventListener('resize', () => {
+//           createBubbles();
+//       });
+//   }
+  
+//   // Initialize
+//   function init() {
+//       setupInputAnimations();
+//       setupFormSubmission();
+//       setupEnvelopeInteractions();
+//       createBubbles();
+//       addEnvelopeAnimations();
+//       handleResize();
+//   }
+  
+//   init();
+// });
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Get all form elements
+    const form = document.querySelector('.portfolio-contact-form');
+    const emailInput = document.getElementById('portfolio-email');
+    const subjectInput = document.getElementById('portfolio-subject');
+    const messageInput = document.getElementById('portfolio-message');
+    const submitBtn = document.querySelector('.portfolio-submit-btn');
+    const notification = document.querySelector('.portfolio-notification');
+    
+    // Get all paper and envelope elements
+    const paper = document.querySelector('.portfolio-paper');
+    const envelope = document.querySelector('.portfolio-envelope');
+    const envelopeFlap = document.querySelector('.portfolio-envelope-flap');
+    
+    // Get paper text fields
+    const paperEmail = document.querySelector('.portfolio-paper-email .portfolio-paper-text');
+    const paperSubject = document.querySelector('.portfolio-paper-subject .portfolio-paper-text');
+    const paperMessage = document.querySelector('.portfolio-paper-message .portfolio-paper-text');
+    
+    // Function to handle input animations and paper mirroring
+    function setupInputAnimations() {
+        // Email input sync with paper
+        emailInput.addEventListener('input', function() {
+            mirrorTextToPaper(this.value, paperEmail);
+        });
+        
+        // Subject input sync with paper
+        subjectInput.addEventListener('input', function() {
+            mirrorTextToPaper(this.value, paperSubject);
+        });
+        
+        // Message input sync with paper
+        messageInput.addEventListener('input', function() {
+            mirrorTextToPaper(this.value, paperMessage);
+        });
+        
+        // Set placeholder to space for styling
+        [emailInput, subjectInput, messageInput].forEach(input => {
+            input.setAttribute('placeholder', ' ');
+        });
+    }
+    
+    function mirrorTextToPaper(text, paperElement) {
+      // If no text, clear the element
+      if (!text) {
+          paperElement.textContent = '';
+          return;
+      }
+      if (paperElement === paperEmail) {
+        const atIndex = text.indexOf('@');
+        if (atIndex !== -1) {
+          text = text.substring(0, atIndex);
+        }
+      }
+      // Simply update the text content directly
+      paperElement.textContent = text;
+  }
+    
+    // Function to handle form submission with paper folding and envelope animations
+    function setupFormSubmission() {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Disable form during animation
+            // [emailInput, subjectInput, messageInput, submitBtn].forEach(el => {
+            //     el.disabled = true;
+            // });
+            
+            // Animation sequence
+            animatePaperToEnvelope()
+                .then(() => {
+                    // Show success notification
+                    notification.classList.add('show');
+                    
+                    // Reset the form
+                    form.reset();
+                    [paperEmail, paperSubject, paperMessage].forEach(el => {
+                        el.textContent = '';
+                    });
+                    
+                    // [emailInput, subjectInput, messageInput, submitBtn].forEach(el => {
+                    //     el.disabled = false;
+                    // });
+                    
+                    // Reset paper and envelope positions
+                    setTimeout(() => {
+                        paper.className = 'portfolio-paper';
+                        envelope.className = 'portfolio-envelope';
+                        notification.classList.remove('show');
+                    }, 4000);
+                });
+        });
+    }
+    
+    // Function to animate the paper folding and envelope sending
+    function animatePaperToEnvelope() {
+        return new Promise(resolve => {
+            // Start the folding animation
+            paper.classList.add('fold-start');
+            
+            // Show the envelope
+            // envelope.classList.add('open');
+            envelope.classList.add('show');
+            
+            
+            // After a short delay, complete the paper fold and hide it
+            setTimeout(() => {
+                paper.classList.add('fold-complete');
+                
+                // Close the envelope flap
+                setTimeout(() => {
+                    envelope.classList.add('open');
+                    
+                    // Send the envelope flying
+                    setTimeout(() => {
+                        envelope.classList.add('send');
+                        
+                        // Resolve promise after animation completes
+                        setTimeout(() => {
+                            resolve();
+                        }, 1500);
+                    }, 600);
+                }, 500);
+            }, 1000);
+        });
+    }
+    
+    // Initialize
+    function init() {
+        setupInputAnimations();
+        setupFormSubmission();
+    }
+    
+    init();
+});
+
+
+(function(){
+  emailjs.init({
+    publicKey: 'wb42Fz4qy6x1_cuZT',
+  });
+})();
+
+// Get form elements
+const contactForm = document.querySelector('.portfolio-contact-form');
+const emailInput = document.getElementById('portfolio-email');
+const subjectInput = document.getElementById('portfolio-subject');
+const messageInput = document.getElementById('portfolio-message');
+const submitButton = document.querySelector('.portfolio-submit-btn');
+const paperEmail = document.querySelector('.portfolio-paper-email .portfolio-paper-text');
+const paperSubject = document.querySelector('.portfolio-paper-subject .portfolio-paper-text');
+const paperMessage = document.querySelector('.portfolio-paper-message .portfolio-paper-text');
+const paper = document.querySelector('.portfolio-paper');
+const envelope = document.querySelector('.portfolio-envelope');
+
+// Add form submission event handler
+contactForm.addEventListener('submit', function(event) {
+  // Prevent the default form submission
+  event.preventDefault();
+  
+  // Disable the submit button and change text to show processing
+  submitButton.disabled = true;
+//   [emailInput, subjectInput, messageInput].forEach(el => {
+//     el.disabled = true;
+// });
+  const originalButtonText = submitButton.querySelector('.portfolio-btn-text').textContent;
+  submitButton.querySelector('.portfolio-btn-text').textContent = 'Sending...';
+  
+  // Create a loading animation on the button
+  submitButton.classList.add('portfolio-btn-loading');
+  
+  // Prepare template parameters (these should match your EmailJS template)
+  const templateParams = {
+      email: emailInput.value,
+      subject: subjectInput.value,
+      message: messageInput.value
+  };
+  
+  // Send the email using EmailJS
+  // Replace "your_service_id" and "your_template_id" with your actual EmailJS service and template IDs
+  emailjs.send("service_ktwn828", "template_hpztomb", templateParams)
+      .then(function(response) {
+          // Show success message
+          showNotification('success', 'Your message has been sent successfully!');
+          
+          // Reset the form
+          contactForm.reset();
+          [paperEmail, paperSubject, paperMessage].forEach(el => {
+            el.textContent = '';
+        });
+          
+          console.log('SUCCESS!', response.status, response.text);
+      }, function(error) {
+          // Show error message
+          showNotification('error', 'Failed to send message. Please try again later.');
+          
+          console.log('FAILED...', error);
+      })
+      .finally(function() {
+          // Re-enable the submit button and restore original text
+          submitButton.disabled = false;
+          submitButton.querySelector('.portfolio-btn-text').textContent = originalButtonText;
+          submitButton.classList.remove('portfolio-btn-loading');
+
+        //   [paperEmail, paperSubject, paperMessage].forEach(el => {
+        //     el.textContent = '';
+        // });
+        
+        // [emailInput, subjectInput, messageInput, submitButton].forEach(el => {
+        //     el.disabled = false;
+        // });
+
+        setTimeout(() => {
+            paper.className = 'portfolio-paper';
+            envelope.className = 'portfolio-envelope';
+        }, 4000);
+      });
+});
+
+// Function to show notifications
+function showNotification(type, message) {
+  // Create notification element
+  const notification = document.createElement('div');
+  notification.className = `portfolio-notification portfolio-notification-${type}`;
+  
+  // Create notification content
+  const notificationContent = document.createElement('div');
+  notificationContent.className = 'portfolio-notification-content';
+  notificationContent.textContent = message;
+  
+  // Add icon based on type
+  const icon = document.createElement('span');
+  icon.className = 'portfolio-notification-icon';
+  if (type === 'success') {
+      icon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" 
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+      </svg>`;
+  } else {
+      icon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" 
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>`;
+  }
+  
+  // Assemble notification
+  notification.appendChild(icon);
+  notification.appendChild(notificationContent);
+  
+  // Add close button
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'portfolio-notification-close';
+  closeBtn.innerHTML = '&times;';
+  closeBtn.addEventListener('click', function() {
+      notification.classList.add('portfolio-notification-hiding');
+      setTimeout(() => {
+          document.body.removeChild(notification);
+      }, 300);
+  });
+  notification.appendChild(closeBtn);
+  
+  // Add notification to the document
+  document.body.appendChild(notification);
+  
+  // Set timeout to auto-remove notification
+  setTimeout(() => {
+      if (document.body.contains(notification)) {
+          notification.classList.add('portfolio-notification-hiding');
+          setTimeout(() => {
+              if (document.body.contains(notification)) {
+                  document.body.removeChild(notification);
+              }
+          }, 300);
+      }
+  }, 5000);
+}

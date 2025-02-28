@@ -954,6 +954,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Apply theme immediately
     applyTheme(dominantColors);
+    const defaultUrl = 'https://linkedin.com/in/chanukachandrayapa';
+    generateQRCode(defaultUrl);
     
     // Close modal and show success
     loading.style.display = 'none';
@@ -1334,7 +1336,6 @@ document.addEventListener('DOMContentLoaded', function() {
 //   const notification = document.querySelector('.portfolio-notification');
 //   const envelope = document.querySelector('.portfolio-envelope');
 //   const envelopeFlap = document.querySelector('.portfolio-envelope-flap');
-//   const letter = document.querySelector('.portfolio-envelope-letter');
   
 //   // Function to handle input animations
 //   function setupInputAnimations() {
@@ -1405,65 +1406,64 @@ document.addEventListener('DOMContentLoaded', function() {
 //       });
 //   }
   
-//   // Function to add interactive envelope animations
-//   function setupEnvelopeInteractions() {
-//       // Make envelope interactive on hover
-//       const animationContainer = document.querySelector('.portfolio-animation-container');
+  // Function to add interactive envelope animations
+  function setupEnvelopeInteractions() {
+      // Make envelope interactive on hover
+      const animationContainer = document.querySelector('.portfolio-animation-container');
+      const letter = document.querySelector('.portfolio-paper');
       
-//       animationContainer.addEventListener('mouseenter', () => {
-//           envelopeFlap.style.transform = 'rotateX(60deg)';
-//           letter.style.transform = 'translateY(-25px)';
-//       });
+      animationContainer.addEventListener('mouseenter', () => {
+          letter.style.transform = 'translateY(-25px)';
+      });
       
-//       animationContainer.addEventListener('mouseleave', () => {
-//           envelopeFlap.style.transform = '';
-//           letter.style.transform = '';
-//       });
+      animationContainer.addEventListener('mouseleave', () => {
+          letter.style.transform = '';
+      });
       
-//       // Add touch events for mobile
-//       animationContainer.addEventListener('touchstart', () => {
-//           envelopeFlap.style.transform = 'rotateX(60deg)';
-//           letter.style.transform = 'translateY(-25px)';
-//       });
+      // Add touch events for mobile
+      animationContainer.addEventListener('touchstart', () => {
+          letter.style.transform = 'translateY(-25px)';
+      });
       
-//       animationContainer.addEventListener('touchend', () => {
-//           envelopeFlap.style.transform = '';
-//           letter.style.transform = '';
-//       });
-//   }
+      animationContainer.addEventListener('touchend', () => {
+          letter.style.transform = '';
+      });
+  }
   
-//   // Create dynamic bubbles
-//   function createBubbles() {
-//       const bubblesContainer = document.querySelector('.portfolio-floating-bubbles');
-//       const bubbleCount = window.innerWidth < 768 ? 5 : 8;
+  // Create dynamic bubbles
+  function createBubbles() {
+      const bubblesContainer = document.querySelector('.portfolio-floating-bubbles');
+      const bubbleCount = window.innerWidth < 768 ? 30 : 40;
       
-//       // Clear existing bubbles
-//       while (bubblesContainer.firstChild) {
-//           bubblesContainer.removeChild(bubblesContainer.firstChild);
-//       }
+      // Clear existing bubbles
+      while (bubblesContainer.firstChild) {
+          bubblesContainer.removeChild(bubblesContainer.firstChild);
+      }
       
-//       // Create new bubbles
-//       for (let i = 0; i < bubbleCount; i++) {
-//           const bubble = document.createElement('div');
-//           bubble.classList.add('portfolio-bubble');
+      // Create new bubbles
+      for (let i = 0; i < bubbleCount; i++) {
+          const bubble = document.createElement('div');
+          bubble.classList.add('portfolio-bubble');
           
-//           const size = Math.random() * 30 + 10;
-//           const left = Math.random() * 100;
-//           const delay = Math.random() * 5;
-//           const duration = Math.random() * 10 + 10;
-//           const opacity = Math.random() * 0.5 + 0.1;
+          const size = Math.random() * 30 + 10;
+          const left = Math.random() * 100;
+          const top = Math.random() * 100;
+          const delay = Math.random() * 5;
+          const duration = Math.random() * 10 + 10;
+          const opacity = Math.random() * 0.5 + 0.1;
           
-//           bubble.style.width = `${size}px`;
-//           bubble.style.height = `${size}px`;
-//           bubble.style.left = `${left}%`;
-//           bubble.style.animationDelay = `${delay}s`;
-//           bubble.style.animationDuration = `${duration}s`;
-//           bubble.style.opacity = opacity;
-//           bubble.style.background = `rgba(248, 177, 51, ${opacity})`;
+          bubble.style.width = `${size}px`;
+          bubble.style.height = `${size}px`;
+          bubble.style.left = `${left}%`;
+          bubble.style.top = `${top}%`;
+          bubble.style.animationDelay = `${delay}s`;
+          bubble.style.animationDuration = `${duration}s`;
+          bubble.style.opacity = opacity;
+          bubble.style.background = `rgba(248, 177, 51, ${opacity})`;
           
-//           bubblesContainer.appendChild(bubble);
-//       }
-//   }
+          bubblesContainer.appendChild(bubble);
+      }
+  }
   
 //   // Add email send animation
 //   function addEnvelopeAnimations() {
@@ -1651,6 +1651,8 @@ document.addEventListener('DOMContentLoaded', function() {
     function init() {
         setupInputAnimations();
         setupFormSubmission();
+        createBubbles();
+        setupEnvelopeInteractions();
     }
     
     init();
@@ -1799,3 +1801,64 @@ function showNotification(type, message) {
       }
   }, 5000);
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Set current year for copyright
+  document.getElementById('year').textContent = new Date().getFullYear();
+  
+  // Default LinkedIn profile URL
+  const defaultUrl = 'https://linkedin.com/in/chanukachandrayapa';
+  const qrInput = document.getElementById('qrInput');
+  const qrControls = document.querySelector('.qr-controls');
+  // qrInput.value = defaultUrl;
+  
+  // Generate QR code on page load with default URL
+  generateQRCode(defaultUrl);
+  
+  // Generate QR code when button is clicked
+  document.getElementById('generateQR').addEventListener('click', function() {
+    qrControls.classList.add('input-active');
+        setTimeout(() => {
+            qrInput.focus();
+        }, 400); // Focus after animation completes
+    });
+    qrInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+          const url = qrInput.value.trim();
+          if (url) {
+              generateQRCode(url);
+              
+              // Reset to button state
+              qrControls.classList.remove('input-active');
+              
+              // Add animation effect to QR code
+              const qrCode = document.getElementById('qrCode');
+              qrCode.style.animation = 'none';
+              void qrCode.offsetWidth; // Trigger reflow
+              qrCode.style.animation = 'floatIn 0.8s ease forwards';
+          }
+      }
+  });
+});
+
+// Function to generate QR code
+function generateQRCode(data) {
+  // Clear previous QR code
+  document.getElementById('qrCode').innerHTML = '';
+  
+  // Create new QR code
+  new QRCode(document.getElementById('qrCode'), {
+      text: data,
+      width: 150,
+      height: 150,
+      colorDark: getComputedStyle(document.documentElement).getPropertyValue('--accent').trim(),
+      colorLight: getComputedStyle(document.documentElement).getPropertyValue('--secondary').trim(),
+      correctLevel: QRCode.CorrectLevel.H
+  });
+  const qrCode = document.getElementById('qrCode');
+    qrCode.style.animation = 'none';
+    void qrCode.offsetWidth; // Trigger reflow
+    qrCode.style.animation = 'floatIn 0.8s ease forwards';
+}
+
+

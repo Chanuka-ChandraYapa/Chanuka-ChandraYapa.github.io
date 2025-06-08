@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Neucha&family=Shadows+Into+Light&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Neucha&family=Shadows+Into+Light&display=swap");
 
 :root {
   --primary: #f8b133;
@@ -577,6 +577,58 @@ h6 {
   .container {
     display: none;
   }
+}
+
+.portfolio-cv-container {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+.portfolio-cv-btn {
+  align-self: flex-start;
+  background: var(--accent);
+  color: var(--secondary);
+  border: none;
+  border-radius: 50px;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  overflow: hidden;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.portfolio-cv-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50px;
+  transition: width 0.4s ease;
+  z-index: 1;
+}
+
+.portfolio-cv-btn:hover {
+  transform: translateY(-3px);
+}
+
+.portfolio-cv-btn:hover::before {
+  width: 100%;
+}
+
+.portfolio-cv-btn:active {
+  transform: translateY(0);
+}
+
+.portfolio-cv-btn:hover .portfolio-btn-icon {
+  transform: translateX(6px);
 }
 
 .ball {
@@ -1699,246 +1751,247 @@ h6 {
 } */
 
 .portfolio-contact-section {
-    position: relative;
-    padding: 5rem 2rem;
-    overflow: hidden;
-    /* background-color: var(--primary); */
+  position: relative;
+  padding: 5rem 2rem;
+  overflow: hidden;
+  /* background-color: var(--primary); */
+}
+
+.portfolio-contact-container {
+  max-width: 90%;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  background: var(--secondary);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  position: relative;
+}
+
+/* Left Side (Form) */
+.portfolio-contact-left {
+  flex: 1 1 500px;
+  padding: 4rem 3rem;
+  position: relative;
+  z-index: 1;
+}
+
+.portfolio-contact-title {
+  font-size: 2.5rem;
+  margin-top: -3rem;
+  margin-bottom: 1rem;
+  color: var(--accent);
+  position: relative;
+  display: inline-block;
+}
+
+.portfolio-contact-title::after {
+  content: "";
+  position: absolute;
+  height: 6px;
+  width: 40%;
+  background: var(--primary);
+  bottom: -5px;
+  left: 0;
+  z-index: -1;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.portfolio-contact-title:hover::after {
+  width: 100%;
+}
+
+.portfolio-contact-subtitle {
+  font-size: 1.1rem;
+  color: var(--text);
+  margin-bottom: 3rem;
+}
+
+/* Form Elements */
+.portfolio-contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.portfolio-input-wrapper {
+  position: relative;
+  margin-bottom: 0.5rem;
+}
+
+.portfolio-form-label {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  color: var(--accent);
+  opacity: 0.7;
+  transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  pointer-events: none;
+  z-index: 1;
+  background: transparent;
+  padding: 0 0.25rem;
+  transform-origin: left top;
+}
+
+.portfolio-form-input {
+  width: 90%;
+  padding: 1rem;
+  border: 2px solid var(--secondary);
+  border-radius: 12px;
+  font-size: 1rem;
+  color: black;
+  background: white;
+  transition: all 0.3s ease;
+  outline: none;
+  font-family: "Montserrat", serif;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* Fix for label placement when input is focused or has content */
+.portfolio-form-input:focus,
+.portfolio-form-input:not(:placeholder-shown) {
+  border: none;
+  border-color: var(--primary);
+  /* padding-top: 1.5rem; */
+  /* padding-bottom: 0.5rem; */
+}
+
+.portfolio-form-input:focus + .portfolio-form-label,
+.portfolio-form-input:not(:placeholder-shown) + .portfolio-form-label {
+  transform: translateY(-1.4rem) translateX(-0.5rem) scale(0.8);
+  opacity: 1;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* Add placeholder that's not visible but helps with the :not(:placeholder-shown) selector */
+.portfolio-form-input::placeholder {
+  color: transparent;
+}
+
+.portfolio-form-textarea {
+  min-height: 150px;
+  resize: vertical;
+}
+
+/* Input focus effects */
+.portfolio-form-input:focus {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* Submit Button */
+.portfolio-submit-btn {
+  align-self: flex-start;
+  background: var(--primary);
+  color: var(--text);
+  border: none;
+  border-radius: 50px;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  overflow: hidden;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 15px rgba(248, 177, 51, 0.3);
+}
+
+.portfolio-submit-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50px;
+  transition: width 0.4s ease;
+  z-index: 1;
+}
+
+.portfolio-submit-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(248, 177, 51, 0.4);
+}
+
+.portfolio-submit-btn:hover::before {
+  width: 100%;
+}
+
+.portfolio-submit-btn:active {
+  transform: translateY(0);
+}
+
+.portfolio-btn-text {
+  position: relative;
+  z-index: 2;
+}
+
+.portfolio-btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  transition: transform 0.3s ease;
+}
+
+.portfolio-submit-btn:hover .portfolio-btn-icon {
+  transform: translateX(6px) rotate(-15deg);
+}
+
+/* Right Side (Animation) */
+.portfolio-contact-right {
+  flex: 1 1 400px;
+  background: rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.portfolio-animation-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1000px;
+  animation: gentle-float 6s ease-in-out infinite;
+  z-index: 2;
+}
+
+/* New animations */
+@keyframes gentle-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
   }
-  
-  .portfolio-contact-container {
-    max-width: 90%;
-    margin: 0 auto;
-    display: flex;
-    flex-wrap: wrap;
-    background: var(--secondary);
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-    overflow: hidden;
-    position: relative;
+  50% {
+    transform: translateY(-15px) rotate(2deg);
   }
-  
-  /* Left Side (Form) */
-  .portfolio-contact-left {
-    flex: 1 1 500px;
-    padding: 4rem 3rem;
-    position: relative;
-    z-index: 1;
+}
+
+/* Add subtle animations for form field focus */
+@keyframes input-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(var(--primary), 0.4);
   }
-  
-  .portfolio-contact-title {
-    font-size: 2.5rem;
-    margin-top: -3rem;
-    margin-bottom: 1rem;
-    color: var(--accent);
-    position: relative;
-    display: inline-block;
+  70% {
+    box-shadow: 0 0 0 10px rgba(var(--primary), 0);
   }
-  
-  .portfolio-contact-title::after {
-    content: "";
-    position: absolute;
-    height: 6px;
-    width: 40%;
-    background: var(--primary);
-    bottom: -5px;
-    left: 0;
-    z-index: -1;
-    border-radius: 4px;
-    transition: width 0.3s ease;
+  100% {
+    box-shadow: 0 0 0 0 rgba(var(--primary), 0);
   }
-  
-  .portfolio-contact-title:hover::after {
-    width: 100%;
-  }
-  
-  .portfolio-contact-subtitle {
-    font-size: 1.1rem;
-    color: var(--text);
-    margin-bottom: 3rem;
-  }
-  
-  /* Form Elements */
-  .portfolio-contact-form {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-  }
-  
-  .portfolio-input-wrapper {
-    position: relative;
-    margin-bottom: 0.5rem;
-  }
-  
-  .portfolio-form-label {
-    position: absolute;
-    top: 1rem;
-    left: 1rem;
-    color: var(--accent);
-    opacity: 0.7;
-    transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    pointer-events: none;
-    z-index: 1;
-    background: transparent;
-    padding: 0 0.25rem;
-    transform-origin: left top;
-  }
-  
-  .portfolio-form-input {
-    width: 90%;
-    padding: 1rem;
-    border: 2px solid var(--secondary);
-    border-radius: 12px;
-    font-size: 1rem;
-    color: black;
-    background: white;
-    transition: all 0.3s ease;
-    outline: none;
-    font-family: "Montserrat", serif;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-  }
-  
-  /* Fix for label placement when input is focused or has content */
-  .portfolio-form-input:focus,
-  .portfolio-form-input:not(:placeholder-shown) {
-    border: none;
-    border-color: var(--primary);
-    /* padding-top: 1.5rem; */
-    /* padding-bottom: 0.5rem; */
-  }
-  
-  .portfolio-form-input:focus + .portfolio-form-label,
-  .portfolio-form-input:not(:placeholder-shown) + .portfolio-form-label {
-    transform: translateY(-1.4rem) translateX(-0.5rem) scale(0.8);
-    opacity: 1;
-    color: var(--primary);
-    font-weight: 600;
-  }
-  
-  /* Add placeholder that's not visible but helps with the :not(:placeholder-shown) selector */
-  .portfolio-form-input::placeholder {
-    color: transparent;
-  }
-  
-  .portfolio-form-textarea {
-    min-height: 150px;
-    resize: vertical;
-  }
-  
-  /* Input focus effects */
-  .portfolio-form-input:focus {
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-  }
-  
-  /* Submit Button */
-  .portfolio-submit-btn {
-    align-self: flex-start;
-    background: var(--primary);
-    color: var(--text);
-    border: none;
-    border-radius: 50px;
-    padding: 1rem 2rem;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    overflow: hidden;
-    position: relative;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow: 0 4px 15px rgba(248, 177, 51, 0.3);
-  }
-  
-  .portfolio-submit-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 0;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 50px;
-    transition: width 0.4s ease;
-    z-index: 1;
-  }
-  
-  .portfolio-submit-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(248, 177, 51, 0.4);
-  }
-  
-  .portfolio-submit-btn:hover::before {
-    width: 100%;
-  }
-  
-  .portfolio-submit-btn:active {
-    transform: translateY(0);
-  }
-  
-  .portfolio-btn-text {
-    position: relative;
-    z-index: 2;
-  }
-  
-  .portfolio-btn-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    z-index: 2;
-    transition: transform 0.3s ease;
-  }
-  
-  .portfolio-submit-btn:hover .portfolio-btn-icon {
-    transform: translateX(6px) rotate(-15deg);
-  }
-  
-  /* Right Side (Animation) */
-  .portfolio-contact-right {
-    flex: 1 1 400px;
-    background:rgba(0, 0, 0, 0.1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .portfolio-animation-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    perspective: 1000px;
-    animation: gentle-float 6s ease-in-out infinite;
-    z-index: 2;
-  }
-  
-  /* New animations */
-  @keyframes gentle-float {
-    0%, 100% {
-      transform: translateY(0) rotate(0deg);
-    }
-    50% {
-      transform: translateY(-15px) rotate(2deg);
-    }
-  }
-  
-  /* Add subtle animations for form field focus */
-  @keyframes input-pulse {
-    0% {
-      box-shadow: 0 0 0 0 rgba(var(--primary), 0.4);
-    }
-    70% {
-      box-shadow: 0 0 0 10px rgba(var(--primary), 0);
-    }
-    100% {
-      box-shadow: 0 0 0 0 rgba(var(--primary), 0);
-    }
-  }
+}
 
 /* Paper Styling */
 .portfolio-paper {
@@ -1964,7 +2017,7 @@ h6 {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('https://www.transparenttextures.com/patterns/paper.png'); /* Use a paper texture */
+  background-image: url("https://www.transparenttextures.com/patterns/paper.png"); /* Use a paper texture */
   opacity: 0.3; /* Adjust opacity to make it subtle */
   pointer-events: none; /* Ensure clicks pass through */
   z-index: 1;
@@ -2003,8 +2056,8 @@ h6 {
   background: repeating-linear-gradient(
     to bottom,
     transparent,
-    transparent 16px, /* Adjust spacing between lines */
-    #eee 16px,
+    transparent 16px,
+    /* Adjust spacing between lines */ #eee 16px,
     #eee 17px /* Line thickness */
   );
   z-index: -1; /* Place behind the content */
@@ -2030,7 +2083,6 @@ h6 {
   color: var(--accent);
   font-size: 18px;
 }
-
 
 .portfolio-paper-message .portfolio-paper-text {
   min-height: 80px;
@@ -2102,7 +2154,6 @@ h6 {
   border-radius: 0 0 5px 0;
   z-index: 1;
 }
-
 
 /* Paper folding animation */
 @keyframes fold-paper-top {
@@ -2466,7 +2517,7 @@ h6 {
 
 @keyframes portfolio-btn-spinner {
   to {
-      transform: rotate(360deg);
+    transform: rotate(360deg);
   }
 }
 
@@ -2492,7 +2543,7 @@ h6 {
 }
 
 .portfolio-notification-success {
-  border-left: 4px solid #4CAF50;
+  border-left: 4px solid #4caf50;
 }
 
 .portfolio-notification-error {
@@ -2504,7 +2555,7 @@ h6 {
 }
 
 .portfolio-notification-success .portfolio-notification-icon {
-  color: #4CAF50;
+  color: #4caf50;
 }
 
 .portfolio-notification-error .portfolio-notification-icon {
@@ -2526,26 +2577,25 @@ h6 {
 
 @keyframes portfolio-notification-slide-in {
   from {
-      transform: translateX(100%);
-      opacity: 0;
+    transform: translateX(100%);
+    opacity: 0;
   }
   to {
-      transform: translateX(0);
-      opacity: 1;
+    transform: translateX(0);
+    opacity: 1;
   }
 }
 
 @keyframes portfolio-notification-slide-out {
   from {
-      transform: translateX(0);
-      opacity: 1;
+    transform: translateX(0);
+    opacity: 1;
   }
   to {
-      transform: translateX(100%);
-      opacity: 0;
+    transform: translateX(100%);
+    opacity: 0;
   }
 }
-
 
 .footer {
   background-color: var(--accent);
@@ -2583,7 +2633,6 @@ h6 {
   /* transform: scale(1.2); */
 }
 
-
 .social-links:hover .social-icon {
   opacity: 0.7;
 }
@@ -2596,9 +2645,6 @@ h6 {
 .social-links .social-icon:hover .icon {
   fill: var(--primary);
 }
-
-
-
 
 .copyright {
   font-size: 0.9rem;
@@ -2699,31 +2745,59 @@ h6 {
 }
 
 @keyframes floatIn {
-  0% { opacity: 0; transform: translateY(30px); }
-  100% { opacity: 1; transform: translateY(0); }
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes shimmer {
-  0% { box-shadow: 0 0 5px rgba(248, 177, 51, 0.3); }
-  50% { box-shadow: 0 0 20px rgba(248, 177, 51, 0.7); }
-  100% { box-shadow: 0 0 5px rgba(248, 177, 51, 0.3); }
+  0% {
+    box-shadow: 0 0 5px rgba(248, 177, 51, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(248, 177, 51, 0.7);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(248, 177, 51, 0.3);
+  }
 }
 
 @keyframes bounce {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(-5px); }
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-5px);
+  }
 }
 
 /* Animations */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .qr-code:hover {
@@ -2740,16 +2814,16 @@ h6 {
     text-align: center;
     padding: 1rem;
   }
-  
+
   .social-links {
     order: 1;
     justify-content: center;
   }
-  
+
   .copyright {
     order: 3;
   }
-  
+
   .qr-section {
     display: flex;
     flex-direction: column;
@@ -2772,7 +2846,7 @@ h6 {
     z-index: 10;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
-  
+
   .qr-controls {
     margin-top: 0;
     max-width: 280px;

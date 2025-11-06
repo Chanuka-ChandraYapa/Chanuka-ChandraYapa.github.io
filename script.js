@@ -2507,6 +2507,15 @@ function initTechGlobe() {
   let autoRotationEnabled = true; // User control for auto rotation
   let rotationSpeed = 0.5; // Rotation speed multiplier
 
+  // Category filters
+  const categoryFilters = {
+    programming: true,
+    web: true,
+    database: true,
+    tools: true,
+    version: true,
+  };
+
   // Get theme colors from CSS
   function getThemeColor(variable) {
     const style = getComputedStyle(document.documentElement);
@@ -3182,7 +3191,9 @@ function initTechGlobe() {
     mouseDownPosition = { x: event.clientX, y: event.clientY };
 
     raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObjects(nodeMeshes);
+    // Only check visible nodes for dragging
+    const visibleNodes = nodeMeshes.filter((mesh) => mesh.visible);
+    const intersects = raycaster.intersectObjects(visibleNodes);
 
     if (intersects.length > 0) {
       isDragging = true;
@@ -3324,7 +3335,9 @@ function initTechGlobe() {
       mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
       raycaster.setFromCamera(mouse, camera);
-      const intersects = raycaster.intersectObjects(nodeMeshes);
+      // Only check visible nodes
+      const visibleNodes = nodeMeshes.filter((mesh) => mesh.visible);
+      const intersects = raycaster.intersectObjects(visibleNodes);
 
       if (intersects.length > 0) {
         const clickedMesh = intersects[0].object;
@@ -3680,6 +3693,9 @@ function initTechGlobe() {
 
   // Physics simulation
   function updatePhysics() {
+    // Helper to check if node is visible
+    const isNodeVisible = (node) => categoryFilters[node.category] !== false;
+
     // Spring forces between connected nodes
     techData.links.forEach((link) => {
       const source = nodeMap.get(link.source);
@@ -3688,6 +3704,9 @@ function initTechGlobe() {
 
       const sourceNode = source.node;
       const targetNode = target.node;
+
+      // Skip if either node is filtered out
+      if (!isNodeVisible(sourceNode) || !isNodeVisible(targetNode)) return;
 
       const dx = targetNode.x - sourceNode.x;
       const dy = targetNode.y - sourceNode.y;
@@ -3713,11 +3732,14 @@ function initTechGlobe() {
       }
     });
 
-    // Repulsion between all nodes
+    // Repulsion between all visible nodes
     for (let i = 0; i < techData.nodes.length; i++) {
+      const nodeA = techData.nodes[i];
+      if (!isNodeVisible(nodeA)) continue;
+
       for (let j = i + 1; j < techData.nodes.length; j++) {
-        const nodeA = techData.nodes[i];
         const nodeB = techData.nodes[j];
+        if (!isNodeVisible(nodeB)) continue;
 
         const dx = nodeB.x - nodeA.x;
         const dy = nodeB.y - nodeA.y;
@@ -3746,9 +3768,9 @@ function initTechGlobe() {
       }
     }
 
-    // Center force (pull nodes toward center)
+    // Center force (pull visible nodes toward center)
     techData.nodes.forEach((node) => {
-      if (node.fixed) return;
+      if (node.fixed || !isNodeVisible(node)) return;
 
       const distance = Math.sqrt(
         node.x * node.x + node.y * node.y + node.z * node.z
@@ -3761,9 +3783,9 @@ function initTechGlobe() {
       }
     });
 
-    // Update positions
+    // Update positions for visible nodes only
     techData.nodes.forEach((node) => {
-      if (node.fixed) return;
+      if (node.fixed || !isNodeVisible(node)) return;
 
       // Apply damping
       node.vx *= DAMPING;
@@ -3924,6 +3946,42 @@ function initTechGlobe() {
     renderer.render(scene, camera);
   }
 
+  // Filter nodes by category
+  function applyCategoryFilters() {
+    techData.nodes.forEach((node) => {
+      const nodeData = nodeMap.get(node.id);
+      const isVisible = categoryFilters[node.category] !== false;
+
+      if (nodeData && nodeData.mesh) {
+        // Show/hide node
+        nodeData.mesh.visible = isVisible;
+
+        // Show/hide label
+        const label = labelGroup.children.find(
+          (s) => s.userData && s.userData.node && s.userData.node.id === node.id
+        );
+        if (label) {
+          label.visible = isVisible;
+        }
+      }
+    });
+
+    // Update edges - only show if both connected nodes are visible
+    techData.links.forEach((link, index) => {
+      const line = edgeGroup.children[index];
+      if (line) {
+        const source = nodeMap.get(link.source);
+        const target = nodeMap.get(link.target);
+
+        if (source && target) {
+          const sourceVisible = categoryFilters[source.node.category] !== false;
+          const targetVisible = categoryFilters[target.node.category] !== false;
+          line.visible = sourceVisible && targetVisible;
+        }
+      }
+    });
+  }
+
   // Setup controls UI
   const controlsToggle = document.getElementById("globe-controls-toggle");
   const controlsPanel = document.getElementById("globe-controls-panel");
@@ -3931,6 +3989,13 @@ function initTechGlobe() {
   const toggleRotation = document.getElementById("toggle-rotation");
   const rotationSpeedSlider = document.getElementById("rotation-speed");
   const rotationSpeedValue = document.getElementById("rotation-speed-value");
+
+  // Category filter checkboxes
+  const filterProgramming = document.getElementById("filter-programming");
+  const filterWeb = document.getElementById("filter-web");
+  const filterDatabase = document.getElementById("filter-database");
+  const filterTools = document.getElementById("filter-tools");
+  const filterVersion = document.getElementById("filter-version");
 
   if (controlsToggle && controlsPanel) {
     controlsToggle.addEventListener("click", () => {
@@ -3966,6 +4031,45 @@ function initTechGlobe() {
       rotationSpeedValue.textContent = rotationSpeed.toFixed(1);
     });
   }
+
+  // Category filter event listeners
+  if (filterProgramming) {
+    filterProgramming.addEventListener("change", (e) => {
+      categoryFilters.programming = e.target.checked;
+      applyCategoryFilters();
+    });
+  }
+
+  if (filterWeb) {
+    filterWeb.addEventListener("change", (e) => {
+      categoryFilters.web = e.target.checked;
+      applyCategoryFilters();
+    });
+  }
+
+  if (filterDatabase) {
+    filterDatabase.addEventListener("change", (e) => {
+      categoryFilters.database = e.target.checked;
+      applyCategoryFilters();
+    });
+  }
+
+  if (filterTools) {
+    filterTools.addEventListener("change", (e) => {
+      categoryFilters.tools = e.target.checked;
+      applyCategoryFilters();
+    });
+  }
+
+  if (filterVersion) {
+    filterVersion.addEventListener("change", (e) => {
+      categoryFilters.version = e.target.checked;
+      applyCategoryFilters();
+    });
+  }
+
+  // Apply initial filters
+  applyCategoryFilters();
 
   // Handle resize
   function handleResize() {

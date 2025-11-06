@@ -1074,25 +1074,36 @@ document.addEventListener("DOMContentLoaded", function () {
   // Sample data - replace with your actual experience and education
   const timelineData = [
     {
-      date: "2023-Present",
+      date: "July 2025 - Present",
+      title: "Software Engineer",
+      location: "IGT1 Lanka | Colombo, Sri Lanka",
+      description:
+        "Worked on the frontend aspects of the POKA worker platform dedicated to utilizing technology and AI towards the efficiency of workers and factories (Angular)",
+      logo: "/images/igt.jpeg",
+    },
+    {
+      date: "Jan 2025- June 2025",
       title: "Teaching Assistant",
       location: "University of Moratuwa | Sri Lanka",
       description:
-        'Woriking as a Teaching Assistant for the course "Programming Languages" for the 3rd year undergraduates.',
+        'Worked as a Teaching Assistant for the course "Programming Languages" for the 3rd year undergraduates.',
+      logo: "/images/uom.png",
     },
     {
-      date: "Dec 2023",
+      date: "Dec 2023 - May 2024",
       title: "Intern Software Engineer",
       location: "WSO2 LLC | Colombo, Sri Lanka",
       description:
         "Completed a six-month internship with the APIM team of WSO2. Implemented Throttle Policy Reset support feature for WSO2 API Manager.",
+      logo: "/images/wso2.png",
     },
     {
-      date: "2021-Present",
+      date: "2021-2025",
       title:
         "Undergraduate, B.Sc. Engineering (Hons) (Computer Science & Engineering)",
       location: "University of Moratuwa | Sri Lanka",
-      description: "Maintained a CGPA of 3.89. Dean’s list in 5 semesters",
+      description: "Maintained a CGPA of 3.89. Dean's list in 6 semesters",
+      logo: "/images/uom.png",
     },
     {
       date: "2016-2019",
@@ -1100,6 +1111,7 @@ document.addEventListener("DOMContentLoaded", function () {
       location: "Bandarawela Central College | Bandarawela, Sri Lanka",
       description:
         "Followed Physical Sciences stream and got a Z-Score of 2.3999 ",
+      logo: "/images/bmmv.png",
     },
   ];
 
@@ -1121,9 +1133,16 @@ document.addEventListener("DOMContentLoaded", function () {
                   <div class="timeline-date-text">${item.date}</div>
               </div>
               <div class="timeline-content">
+                  ${
+                    item.logo
+                      ? `<div class="timeline-logo-badge"><img src="${item.logo}" alt="Company Logo" class="timeline-logo-img"></div>`
+                      : ""
+                  }
                   <h3 class="timeline-content-title">${item.title}</h3>
                   <h3 class="timeline-content-location">${item.location}</h3>
-                  <p class="timeline-content-description">${item.description}</p>
+                  <p class="timeline-content-description">${
+                    item.description
+                  }</p>
               </div>
           `;
 
@@ -1381,6 +1400,7 @@ document.addEventListener("DOMContentLoaded", function () {
       date,
       title,
       description,
+      logo: "/images/logo.png", // Default logo, can be customized
     });
 
     // Create and append new node
@@ -1395,6 +1415,7 @@ document.addEventListener("DOMContentLoaded", function () {
               <div class="timeline-date-text">${date}</div>
           </div>
           <div class="timeline-content">
+              <div class="timeline-logo-badge"><img src="/images/logo.png" alt="Company Logo" class="timeline-logo-img"></div>
               <h3 class="timeline-content-title">${title}</h3>
               <p class="timeline-content-description">${description}</p>
           </div>
@@ -1967,3 +1988,208 @@ function generateQRCode(data) {
   void qrCode.offsetWidth; // Trigger reflow
   qrCode.style.animation = "floatIn 0.8s ease forwards";
 }
+
+// ============================================
+// NEW COOL FEATURES
+// ============================================
+
+// 1. Console Easter Egg Messages
+console.log(
+  "%c🎉 Welcome to Chanuka's Portfolio! 🎉",
+  "color: #f8b133; font-size: 20px; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);"
+);
+console.log(
+  "%cDid you know? You can unlock hidden features by:",
+  "color: #21252b; font-size: 14px;"
+);
+console.log(
+  "%c• Clicking the ball 10+ times unlocks Tic-Tac-Toe",
+  "color: #666; font-size: 12px;"
+);
+console.log(
+  "%c• Check out the movie theme changer!",
+  "color: #666; font-size: 12px;"
+);
+console.log(
+  "%cBuilt with ❤️ by Chanuka Lakshan",
+  "color: #f8b133; font-size: 12px; font-style: italic;"
+);
+
+// 2. Scroll Progress Indicator
+function createScrollProgress() {
+  const progressBar = document.createElement("div");
+  progressBar.id = "scroll-progress";
+  progressBar.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    z-index: 10000;
+    transition: width 0.1s ease-out;
+    box-shadow: 0 2px 4px rgba(248, 177, 51, 0.3);
+  `;
+  document.body.appendChild(progressBar);
+
+  window.addEventListener("scroll", () => {
+    const windowHeight =
+      document.documentElement.scrollHeight -
+      document.documentElement.clientHeight;
+    const scrolled = (window.scrollY / windowHeight) * 100;
+    progressBar.style.width = scrolled + "%";
+  });
+}
+
+// 3. Click Ripple Effect
+function createClickRipple() {
+  document.addEventListener("click", (e) => {
+    // Don't create ripple on interactive elements
+    if (
+      e.target.tagName === "BUTTON" ||
+      e.target.tagName === "A" ||
+      e.target.tagName === "INPUT" ||
+      e.target.closest("button") ||
+      e.target.closest("a")
+    ) {
+      return;
+    }
+
+    const ripple = document.createElement("div");
+    const size = 100;
+    const x = e.clientX - size / 2;
+    const y = e.clientY - size / 2;
+
+    ripple.style.cssText = `
+      position: fixed;
+      left: ${x}px;
+      top: ${y}px;
+      width: ${size}px;
+      height: ${size}px;
+      border-radius: 50%;
+      background: var(--primary);
+      opacity: 0.3;
+      pointer-events: none;
+      z-index: 9998;
+      transform: scale(0);
+    `;
+    document.body.appendChild(ripple);
+
+    ripple.animate(
+      [
+        { transform: "scale(0)", opacity: 0.3 },
+        { transform: "scale(4)", opacity: 0 },
+      ],
+      {
+        duration: 600,
+        easing: "ease-out",
+      }
+    ).onfinish = () => {
+      document.body.removeChild(ripple);
+    };
+  });
+}
+
+// 4. Keyboard Shortcuts Helper
+function initKeyboardShortcuts() {
+  const shortcuts = {
+    KeyH: () => scrollToSection("about"),
+    KeyE: () => scrollToSection("experience"),
+    KeyP: () => scrollToSection("projects"),
+    KeyB: () => scrollToSection("blogs"),
+    KeyC: () => scrollToSection("contact me"),
+    KeyT: () => document.getElementById("openThemeModal")?.click(),
+  };
+
+  document.addEventListener("keydown", (e) => {
+    // Don't trigger if typing in input
+    if (
+      e.target.tagName === "INPUT" ||
+      e.target.tagName === "TEXTAREA" ||
+      e.target.isContentEditable
+    ) {
+      return;
+    }
+
+    // Show help with ?
+    if (e.key === "?") {
+      showKeyboardShortcuts();
+      return;
+    }
+
+    // Execute shortcut
+    if (shortcuts[e.code]) {
+      shortcuts[e.code]();
+    }
+  });
+}
+
+function scrollToSection(sectionId) {
+  const section = document.getElementById(sectionId);
+  if (section) {
+    section.scrollIntoView({ behavior: "smooth" });
+  }
+}
+
+function showKeyboardShortcuts() {
+  const modal = document.createElement("div");
+  modal.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10002;
+    animation: fadeIn 0.3s ease;
+  `;
+
+  const content = document.createElement("div");
+  content.style.cssText = `
+    background: var(--accent);
+    color: var(--secondary);
+    padding: 2rem;
+    border-radius: 20px;
+    max-width: 500px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  `;
+  content.innerHTML = `
+    <h2 style="color: var(--primary); margin-top: 0;">⌨️ Keyboard Shortcuts</h2>
+    <div style="display: flex; flex-direction: column; gap: 1rem;">
+      <div><kbd style="background: var(--primary); color: var(--accent); padding: 0.3rem 0.6rem; border-radius: 4px;">H</kbd> - Home/About</div>
+      <div><kbd style="background: var(--primary); color: var(--accent); padding: 0.3rem 0.6rem; border-radius: 4px;">E</kbd> - Experience</div>
+      <div><kbd style="background: var(--primary); color: var(--accent); padding: 0.3rem 0.6rem; border-radius: 4px;">P</kbd> - Projects</div>
+      <div><kbd style="background: var(--primary); color: var(--accent); padding: 0.3rem 0.6rem; border-radius: 4px;">B</kbd> - Blogs</div>
+      <div><kbd style="background: var(--primary); color: var(--accent); padding: 0.3rem 0.6rem; border-radius: 4px;">C</kbd> - Contact</div>
+      <div><kbd style="background: var(--primary); color: var(--accent); padding: 0.3rem 0.6rem; border-radius: 4px;">T</kbd> - Theme Changer</div>
+      <div><kbd style="background: var(--primary); color: var(--accent); padding: 0.3rem 0.6rem; border-radius: 4px;">?</kbd> - Show this help</div>
+    </div>
+    <button id="close-shortcuts" style="margin-top: 1.5rem; padding: 0.5rem 1.5rem; background: var(--primary); color: var(--accent); border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">Close</button>
+  `;
+
+  modal.appendChild(content);
+  document.body.appendChild(modal);
+
+  const closeBtn = content.querySelector("#close-shortcuts");
+  const closeModal = () => {
+    modal.style.animation = "fadeOut 0.3s ease forwards";
+    setTimeout(() => {
+      document.body.removeChild(modal);
+    }, 300);
+  };
+
+  closeBtn.addEventListener("click", closeModal);
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) closeModal();
+  });
+}
+
+// Initialize all new features
+document.addEventListener("DOMContentLoaded", function () {
+  createScrollProgress();
+  createClickRipple();
+  initKeyboardShortcuts();
+});

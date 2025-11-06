@@ -1592,6 +1592,54 @@ h6 {
   font-size: 0.95rem;
 }
 
+/* Logo Badge Styles */
+.timeline-logo-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 60px;
+  height: 60px;
+  background-color: var(--background);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 2px solid var(--primary);
+  transition: all 0.3s ease;
+  z-index: 10;
+  overflow: hidden;
+}
+
+.timeline-node.active .timeline-logo-badge {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(248, 177, 51, 0.3);
+  border-color: var(--primary);
+}
+
+.timeline-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  transition: transform 0.3s ease;
+}
+
+.timeline-node.active .timeline-logo-img {
+  transform: scale(1.1);
+}
+
+.timeline-node:not(.active) .timeline-logo-badge {
+  opacity: 0.7;
+  filter: grayscale(0.3);
+}
+
+.timeline-node.active .timeline-logo-badge {
+  opacity: 1;
+  filter: grayscale(0);
+}
+
 /* Enhanced animation classes */
 .timeline-node {
   transform: translateY(50px);
@@ -1665,6 +1713,25 @@ h6 {
   .timeline-node {
     margin-bottom: 3rem;
   }
+
+  /* Responsive logo badge for mobile */
+  .timeline-logo-badge {
+    width: 50px;
+    height: 50px;
+    top: 0.75rem;
+    right: 0.75rem;
+    padding: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .timeline-logo-badge {
+    width: 45px;
+    height: 45px;
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 5px;
+  }
 }
 
 /* Hover effects for desktop */
@@ -1682,6 +1749,16 @@ h6 {
   .timeline-node:not(.active):hover .timeline-content {
     transform: scale(0.98);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .timeline-node:not(.active):hover .timeline-logo-badge {
+    transform: scale(1.08);
+    box-shadow: 0 6px 18px rgba(248, 177, 51, 0.25);
+  }
+
+  .timeline-logo-badge:hover {
+    transform: scale(1.1) !important;
+    box-shadow: 0 8px 24px rgba(248, 177, 51, 0.4) !important;
   }
 }
 
@@ -2850,5 +2927,23 @@ h6 {
   .qr-controls {
     margin-top: 0;
     max-width: 280px;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
   }
 }

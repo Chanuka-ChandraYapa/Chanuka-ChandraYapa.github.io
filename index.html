@@ -8,6 +8,12 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="script.js" defer></script>
     <script
@@ -38,10 +44,12 @@
           <span></span>
         </div>
         <div class="navbar-links">
-          <a href="#">Experience</a>
-          <a href="#">Projects</a>
-          <a href="#">Blogs</a>
-          <a href="#">Contact Me</a>
+          <a href="#experience">Experience</a>
+          <a href="#tech-stack">Tech Stack</a>
+          <a href="#projects">Projects</a>
+          <a href="#testimonials">Testimonials</a>
+          <a href="#blogs">Blogs</a>
+          <a href="#contact me">Contact Me</a>
           <a class="special" href="#"
             ><span
               >I just typed a long text just because I don't have much to do
@@ -281,6 +289,7 @@
       <section id="tech-stack">
         <h1 class="tech-stack-head">Technical Skills</h1>
         <div id="tech-globe-container">
+          <div id="gemini-constellation" class="gemini-constellation"></div>
           <canvas id="tech-globe-canvas"></canvas>
           <button
             id="globe-controls-toggle"
@@ -561,6 +570,13 @@
         </div>
       </div>
 
+      <section id="testimonials">
+        <h1 class="testimonial-head">Testimonials</h1>
+        <div class="testimonials-container" id="testimonialsContainer">
+          <!-- Testimonials will be populated dynamically -->
+        </div>
+      </section>
+
       <section id="blogs">
         <div class="blog-container">
           <h1 class="blog-head">
@@ -571,9 +587,6 @@
           </div>
         </div>
       </section>
-
-      <!-- Add this button to your existing UI -->
-      <button id="openThemeModal">Change Theme</button>
 
       <!-- Add the modal HTML -->
       <div id="themeModal" class="movie-modal">
@@ -807,5 +820,28 @@
 
       <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     </main>
+
+    <!-- Help button for keyboard shortcuts -->
+    <button
+      id="helpButton"
+      class="help-button"
+      title="Show Keyboard Shortcuts (Press ?)"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="12" cy="12" r="10"></circle>
+        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+      </svg>
+    </button>
   </body>
 </html>

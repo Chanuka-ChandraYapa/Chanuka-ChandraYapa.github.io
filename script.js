@@ -87,7 +87,15 @@ navLinks.forEach((link) => {
   link.addEventListener("click", function (e) {
     e.preventDefault();
 
-    const targetId = this.textContent.toLowerCase();
+    // Get target ID from href attribute (more reliable)
+    let targetId = this.getAttribute("href");
+    if (targetId && targetId.startsWith("#")) {
+      targetId = targetId.substring(1); // Remove the #
+    } else {
+      // Fallback to text content conversion (for backward compatibility)
+      targetId = this.textContent.toLowerCase().replace(/\s+/g, "-");
+    }
+
     const targetSection = document.getElementById(targetId);
 
     if (targetSection) {
@@ -109,6 +117,91 @@ function updateNavTitle(newTitle) {
   setTimeout(() => {
     navTitle.classList.remove("flip-animation");
   }, 300);
+}
+
+// Testimonials data array
+const testimonialsData = [
+  {
+    text: "Chanuka is an exceptional developer with a keen eye for detail and a passion for creating innovative solutions. His technical expertise and collaborative approach make him a valuable team member.",
+    author: "John Smith",
+    role: "Senior Software Engineer",
+    rating: 5,
+  },
+  {
+    text: "Working with Chanuka has been a pleasure. He consistently delivers high-quality code and brings creative solutions to complex problems. His dedication to learning and growth is inspiring.",
+    author: "Sarah Johnson",
+    role: "Project Manager",
+    rating: 5,
+  },
+  {
+    text: "Chanuka's ability to understand requirements and translate them into elegant solutions is remarkable. He's a reliable developer who always goes the extra mile.",
+    author: "Michael Chen",
+    role: "Tech Lead",
+    rating: 5,
+  },
+];
+
+// Function to create testimonial card
+function createTestimonialCard(testimonial) {
+  const card = document.createElement("div");
+  card.className = "testimonial-card";
+
+  const quoteIcon = `
+    <svg
+      class="quote-icon"
+      xmlns="http://www.w3.org/2000/svg"
+      width="40"
+      height="40"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <path
+        d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"
+      ></path>
+      <path
+        d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"
+      ></path>
+    </svg>
+  `;
+
+  const stars = "★".repeat(testimonial.rating);
+
+  card.innerHTML = `
+    <div class="testimonial-quote">
+      ${quoteIcon}
+      <p class="testimonial-text">${testimonial.text}</p>
+    </div>
+    <div class="testimonial-author">
+      <div class="author-info">
+        <h3 class="author-name">${testimonial.author}</h3>
+        <p class="author-role">${testimonial.role}</p>
+      </div>
+      <div class="testimonial-rating">
+        ${stars
+          .split("")
+          .map(() => '<span class="star">★</span>')
+          .join("")}
+      </div>
+    </div>
+  `;
+
+  return card;
+}
+
+// Function to populate testimonials
+function populateTestimonials() {
+  const container = document.getElementById("testimonialsContainer");
+  if (!container) return;
+
+  container.innerHTML = "";
+  testimonialsData.forEach((testimonial) => {
+    const card = createTestimonialCard(testimonial);
+    container.appendChild(card);
+  });
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -154,6 +247,9 @@ document.addEventListener("DOMContentLoaded", function () {
       this.classList.remove("flip-animation");
     }, 300);
   });
+
+  // Populate testimonials
+  populateTestimonials();
 });
 
 window.addEventListener("scroll", function () {
@@ -859,10 +955,12 @@ document.addEventListener("DOMContentLoaded", () => {
   // API Key for OMDb
   const apiKey = "16532318";
 
-  // Open modal when button is clicked
-  openBtn.addEventListener("click", () => {
-    moviemodal.style.display = "block";
-  });
+  // Open modal when button is clicked (if button exists)
+  if (openBtn) {
+    openBtn.addEventListener("click", () => {
+      moviemodal.style.display = "block";
+    });
+  }
 
   // Close modal when X is clicked
   closeBtn.addEventListener("click", () => {
@@ -2098,7 +2196,14 @@ function initKeyboardShortcuts() {
     KeyP: () => scrollToSection("projects"),
     KeyB: () => scrollToSection("blogs"),
     KeyC: () => scrollToSection("contact me"),
-    KeyT: () => document.getElementById("openThemeModal")?.click(),
+    KeyT: () => {
+      const themeModal = document.getElementById("themeModal");
+      if (themeModal) {
+        themeModal.style.display = "block";
+      }
+    },
+    KeyS: () => scrollToSection("tech-stack"),
+    KeyM: () => scrollToSection("testimonials"),
   };
 
   document.addEventListener("keydown", (e) => {
@@ -2157,15 +2262,17 @@ function showKeyboardShortcuts() {
     box-shadow: 0 10px 40px rgba(0,0,0,0.3);
   `;
   content.innerHTML = `
-    <h2 style="color: var(--primary); margin-top: 0;">⌨️ Keyboard Shortcuts</h2>
+    <h2 style="color: var(--primary); margin-top: 0;">Keyboard Shortcuts</h2>
     <div style="display: flex; flex-direction: column; gap: 1rem;">
-      <div><kbd style="background: var(--primary); color: var(--accent); padding: 0.3rem 0.6rem; border-radius: 4px;">H</kbd> - Home/About</div>
-      <div><kbd style="background: var(--primary); color: var(--accent); padding: 0.3rem 0.6rem; border-radius: 4px;">E</kbd> - Experience</div>
-      <div><kbd style="background: var(--primary); color: var(--accent); padding: 0.3rem 0.6rem; border-radius: 4px;">P</kbd> - Projects</div>
-      <div><kbd style="background: var(--primary); color: var(--accent); padding: 0.3rem 0.6rem; border-radius: 4px;">B</kbd> - Blogs</div>
-      <div><kbd style="background: var(--primary); color: var(--accent); padding: 0.3rem 0.6rem; border-radius: 4px;">C</kbd> - Contact</div>
-      <div><kbd style="background: var(--primary); color: var(--accent); padding: 0.3rem 0.6rem; border-radius: 4px;">T</kbd> - Theme Changer</div>
-      <div><kbd style="background: var(--primary); color: var(--accent); padding: 0.3rem 0.6rem; border-radius: 4px;">?</kbd> - Show this help</div>
+          <div><kbd style="background: var(--primary); color: var(--accent); padding: 0.3rem 0.6rem; border-radius: 4px;">H</kbd> - Home/About</div>
+            <div><kbd style="background: var(--primary); color: var(--accent); padding: 0.3rem 0.6rem; border-radius: 4px;">E</kbd> - Experience</div>
+            <div><kbd style="background: var(--primary); color: var(--accent); padding: 0.3rem 0.6rem; border-radius: 4px;">S</kbd> - Tech Stack</div>
+            <div><kbd style="background: var(--primary); color: var(--accent); padding: 0.3rem 0.6rem; border-radius: 4px;">P</kbd> - Projects</div>
+            <div><kbd style="background: var(--primary); color: var(--accent); padding: 0.3rem 0.6rem; border-radius: 4px;">M</kbd> - Testimonials</div>
+            <div><kbd style="background: var(--primary); color: var(--accent); padding: 0.3rem 0.6rem; border-radius: 4px;">B</kbd> - Blogs</div>
+            <div><kbd style="background: var(--primary); color: var(--accent); padding: 0.3rem 0.6rem; border-radius: 4px;">C</kbd> - Contact</div>
+            <div><kbd style="background: var(--primary); color: var(--accent); padding: 0.3rem 0.6rem; border-radius: 4px;">T</kbd> - Theme Changer</div>
+            <div><kbd style="background: var(--primary); color: var(--accent); padding: 0.3rem 0.6rem; border-radius: 4px;">?</kbd> - Show this help</div>
     </div>
     <button id="close-shortcuts" style="margin-top: 1.5rem; padding: 0.5rem 1.5rem; background: var(--primary); color: var(--accent); border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">Close</button>
   `;
@@ -2193,6 +2300,14 @@ document.addEventListener("DOMContentLoaded", function () {
   createClickRipple();
   initKeyboardShortcuts();
   initTechGlobe();
+
+  // Help button click handler
+  const helpButton = document.getElementById("helpButton");
+  if (helpButton) {
+    helpButton.addEventListener("click", () => {
+      showKeyboardShortcuts();
+    });
+  }
 });
 
 // ============================================
@@ -2202,6 +2317,345 @@ document.addEventListener("DOMContentLoaded", function () {
 function initTechGlobe() {
   const canvas = document.getElementById("tech-globe-canvas");
   if (!canvas) return;
+
+  // Gemini constellation easter egg
+  let constellationRevealed = false;
+  const container = document.getElementById("tech-globe-container");
+  const constellationContainer = document.getElementById(
+    "gemini-constellation"
+  );
+
+  if (!container || !constellationContainer) {
+    console.warn("Tech globe container or constellation container not found");
+    return;
+  }
+
+  // Gemini constellation star positions (relative to container, left side)
+  // 17 nodes total: 5 clickable stars + 12 constellation stars
+  // Based on exact Gemini constellation pattern from image
+  const geminiStars = [
+    // Clickable stars (integrated into constellation pattern)
+    { x: 6, y: 16, bright: false }, // Clickable star 1 (near Castor area)
+    { x: 5, y: 26, bright: false }, // Clickable star 2 (near Pollux area)
+    { x: 9, y: 42, bright: false }, // Clickable star 3 (near Star H)
+    { x: 15, y: 30, bright: false }, // Clickable star 4 (near Star C)
+    { x: 7, y: 48, bright: false }, // Clickable star 5 (near Star I)
+
+    // Castor's figure (right twin) - extends to the right
+    { x: 7, y: 22, bright: true }, // Castor (main star, upper-left, index 5)
+    { x: 9, y: 16, bright: false }, // Star A (above Castor, up-right, index 6)
+    { x: 11, y: 28, bright: false }, // Star B (down-right from Castor, index 7)
+    { x: 14, y: 34, bright: false }, // Star C (down-right from B, index 8)
+    { x: 17, y: 34, bright: false }, // Star D (right of C, horizontal, index 9)
+    { x: 18, y: 30, bright: false }, // Star E (up-right from D, index 10)
+    { x: 19, y: 32, bright: false }, // Star F (down-right from E, index 11)
+
+    // Pollux's figure (left twin) - extends down and left
+    { x: 5, y: 28, bright: true }, // Pollux (main star, below Castor, slightly left, index 12)
+    { x: 8, y: 36, bright: false }, // Star G (down-right from Pollux, index 13)
+    { x: 8, y: 44, bright: false }, // Star H (down from G, index 14)
+    { x: 6, y: 50, bright: false }, // Star I (down-left from H, index 15)
+    { x: 3, y: 36, bright: false }, // Star J (down-left from Pollux, index 16)
+  ];
+
+  // Connections between stars (indices in geminiStars array)
+  // 16 edges total connecting 17 nodes
+  // Based on exact Gemini constellation pattern from image
+  const geminiConnections = [
+    // Central connection between the twins
+    [5, 12], // Castor (5) to Pollux (12) - main connection
+
+    // Castor's figure (right twin) - exactly as in image
+    [5, 6], // Castor (5) to Star A (6) - diagonally up-right
+    [5, 7], // Castor (5) to Star B (7) - diagonally down-right
+    [7, 8], // Star B (7) to Star C (8) - diagonally down-right
+    [8, 9], // Star C (8) to Star D (9) - horizontally right
+    [9, 10], // Star D (9) to Star E (10) - slightly up-right
+    [10, 11], // Star E (10) to Star F (11) - slightly down-right
+
+    // Pollux's figure (left twin) - exactly as in image
+    [12, 13], // Pollux (12) to Star G (13) - diagonally down-right
+    [13, 14], // Star G (13) to Star H (14) - almost directly down
+    [14, 15], // Star H (14) to Star I (15) - diagonally down-left
+    [12, 16], // Pollux (12) to Star J (16) - diagonally down-left
+
+    // Connections to clickable stars (integrating them naturally)
+    [0, 6], // Clickable star 1 (0) to Star A (6) - near Castor area
+    [1, 12], // Clickable star 2 (1) to Pollux (12) - near Pollux
+    [2, 14], // Clickable star 3 (2) to Star H (14) - near Star H
+    [3, 8], // Clickable star 4 (3) to Star C (8) - near Star C
+    [4, 15], // Clickable star 5 (4) to Star I (15) - near Star I
+  ];
+
+  // Three.js constellation setup
+  let constellationScene = null;
+  let constellationCamera = null;
+  let constellationRenderer = null;
+  let constellationStars = [];
+  let constellationLines = [];
+  let constellationAnimationId = null;
+
+  function initConstellationThreeJS() {
+    if (!constellationContainer) return;
+
+    // Create a canvas for the constellation
+    const constellationCanvas = document.createElement("canvas");
+    constellationCanvas.id = "gemini-constellation-canvas";
+    constellationCanvas.style.cssText = `
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 5;
+    `;
+    constellationContainer.appendChild(constellationCanvas);
+
+    // Get container dimensions
+    const width = container.offsetWidth;
+    const height = container.offsetHeight;
+
+    // Create Three.js scene for constellation
+    constellationScene = new THREE.Scene();
+    constellationCamera = new THREE.OrthographicCamera(
+      -width / 2,
+      width / 2,
+      height / 2,
+      -height / 2,
+      1,
+      1000
+    );
+    constellationCamera.position.z = 100;
+
+    constellationRenderer = new THREE.WebGLRenderer({
+      canvas: constellationCanvas,
+      alpha: true,
+      antialias: true,
+    });
+    constellationRenderer.setSize(width, height);
+    constellationRenderer.setPixelRatio(window.devicePixelRatio);
+    constellationRenderer.setClearColor(0x000000, 0); // Transparent
+
+    // Handle resize
+    const resizeObserver = new ResizeObserver(() => {
+      const newWidth = container.offsetWidth;
+      const newHeight = container.offsetHeight;
+      constellationCamera.left = -newWidth / 2;
+      constellationCamera.right = newWidth / 2;
+      constellationCamera.top = newHeight / 2;
+      constellationCamera.bottom = -newHeight / 2;
+      constellationCamera.updateProjectionMatrix();
+      constellationRenderer.setSize(newWidth, newHeight);
+    });
+    resizeObserver.observe(container);
+  }
+
+  function revealGeminiConstellation() {
+    if (constellationRevealed || !constellationContainer) return;
+    constellationRevealed = true;
+
+    console.log("Revealing Gemini constellation with Three.js");
+    constellationContainer.classList.add("active");
+
+    // Initialize Three.js if not already done
+    if (!constellationScene) {
+      initConstellationThreeJS();
+    }
+
+    if (!constellationScene) return;
+
+    // Get theme color
+    const style = getComputedStyle(document.documentElement);
+    const primaryColor = style.getPropertyValue("--primary").trim();
+    const color = new THREE.Color(primaryColor);
+
+    // Convert percentage positions to pixel coordinates
+    const width = container.offsetWidth;
+    const height = container.offsetHeight;
+
+    // Create all 17 stars using Three.js
+    geminiStars.forEach((starData, index) => {
+      // Convert percentage to pixel coordinates (centered at 0,0)
+      const x = (starData.x / 100) * width - width / 2;
+      const y = height / 2 - (starData.y / 100) * height; // Flip Y axis
+
+      // Create star geometry
+      const starSize = starData.bright ? 4 : 3;
+      const geometry = new THREE.SphereGeometry(starSize, 16, 16);
+      const material = new THREE.MeshBasicMaterial({
+        color: color,
+        emissive: color,
+        emissiveIntensity: starData.bright ? 0.8 : 0.5,
+      });
+
+      const star = new THREE.Mesh(geometry, material);
+      star.position.set(x, y, 0);
+      star.userData.index = index;
+      star.userData.originalScale = starSize;
+      star.scale.set(0, 0, 0); // Start invisible
+
+      constellationScene.add(star);
+      constellationStars.push(star);
+
+      // Animate star appearance
+      setTimeout(() => {
+        const scale = starData.bright ? 1.2 : 1;
+        star.scale.set(scale, scale, scale);
+      }, index * 100);
+    });
+
+    // Create edges connecting stars
+    setTimeout(() => {
+      geminiConnections.forEach((connection, index) => {
+        const [startIdx, endIdx] = connection;
+        const startStar = constellationStars[startIdx];
+        const endStar = constellationStars[endIdx];
+
+        if (!startStar || !endStar) return;
+
+        // Create line geometry
+        const points = [
+          new THREE.Vector3(
+            startStar.position.x,
+            startStar.position.y,
+            startStar.position.z
+          ),
+          new THREE.Vector3(
+            endStar.position.x,
+            endStar.position.y,
+            endStar.position.z
+          ),
+        ];
+
+        const geometry = new THREE.BufferGeometry().setFromPoints(points);
+        const material = new THREE.LineBasicMaterial({
+          color: color,
+          opacity: 0.6,
+          transparent: true,
+          linewidth: 2,
+        });
+
+        const line = new THREE.Line(geometry, material);
+        line.userData.originalOpacity = 0.6;
+        line.material.opacity = 0; // Start invisible
+
+        constellationScene.add(line);
+        constellationLines.push(line);
+
+        // Animate line appearance
+        setTimeout(() => {
+          const animateLine = () => {
+            if (line.material.opacity < line.userData.originalOpacity) {
+              line.material.opacity += 0.05;
+              if (line.material.opacity < line.userData.originalOpacity) {
+                requestAnimationFrame(animateLine);
+              }
+            }
+          };
+          animateLine();
+        }, 500 + index * 150);
+      });
+    }, 100);
+
+    // Animation loop
+    function animateConstellation() {
+      if (!constellationRenderer || !constellationScene) return;
+      constellationAnimationId = requestAnimationFrame(animateConstellation);
+
+      // Make stars twinkle
+      constellationStars.forEach((star) => {
+        const time = Date.now() * 0.001;
+        const twinkle = Math.sin(time * 2 + star.userData.index) * 0.2 + 0.8;
+        star.material.emissiveIntensity =
+          twinkle *
+          (star.userData.index < 5 ||
+          star.userData.index === 5 ||
+          star.userData.index === 12
+            ? 0.8
+            : 0.5);
+      });
+
+      constellationRenderer.render(constellationScene, constellationCamera);
+    }
+
+    animateConstellation();
+
+    // Auto-hide constellation after 8 seconds
+    setTimeout(() => {
+      constellationContainer.classList.remove("active");
+
+      // Stop animation
+      if (constellationAnimationId) {
+        cancelAnimationFrame(constellationAnimationId);
+        constellationAnimationId = null;
+      }
+
+      // Remove all constellation elements after fade out
+      setTimeout(() => {
+        // Remove Three.js objects
+        if (constellationScene) {
+          constellationStars.forEach((star) => {
+            constellationScene.remove(star);
+            star.geometry.dispose();
+            star.material.dispose();
+          });
+          constellationLines.forEach((line) => {
+            constellationScene.remove(line);
+            line.geometry.dispose();
+            line.material.dispose();
+          });
+          constellationStars = [];
+          constellationLines = [];
+        }
+
+        // Remove canvas
+        const canvas = constellationContainer.querySelector(
+          "#gemini-constellation-canvas"
+        );
+        if (canvas) {
+          canvas.remove();
+        }
+
+        // Clean up renderer
+        if (constellationRenderer) {
+          constellationRenderer.dispose();
+          constellationRenderer = null;
+        }
+
+        constellationScene = null;
+        constellationCamera = null;
+        constellationRevealed = false; // Allow it to be triggered again
+      }, 1000); // Wait for fade out transition
+    }, 8000);
+  }
+
+  // Create clickable stars on the left side
+  // These stars are also part of the constellation (indices 0-4)
+  function createClickableStars() {
+    if (!container) return;
+
+    // Use the first 5 stars from geminiStars array as clickable stars
+    const clickableStarPositions = geminiStars.slice(0, 5);
+
+    clickableStarPositions.forEach((pos, index) => {
+      const star = document.createElement("div");
+      star.className = "clickable-star";
+      star.style.left = `${pos.x}%`;
+      star.style.top = `${pos.y}%`;
+      star.setAttribute("data-star-index", index); // Store index for reference
+      star.addEventListener("click", (e) => {
+        e.stopPropagation();
+        revealGeminiConstellation();
+      });
+      container.appendChild(star);
+    });
+  }
+
+  // Wait for container to be ready
+  if (container) {
+    createClickableStars();
+  }
 
   // Update background colors based on theme
   function updateBackgroundColors() {
@@ -2257,6 +2711,26 @@ function initTechGlobe() {
       // Programming
       {
         id: "Python",
+        category: "programming",
+        x: 0,
+        y: 0,
+        z: 0,
+        vx: 0,
+        vy: 0,
+        vz: 0,
+      },
+      {
+        id: "Java",
+        category: "programming",
+        x: 0,
+        y: 0,
+        z: 0,
+        vx: 0,
+        vy: 0,
+        vz: 0,
+      },
+      {
+        id: "C/C++",
         category: "programming",
         x: 0,
         y: 0,
@@ -4085,3 +4559,230 @@ function initTechGlobe() {
   // Start animation
   animate();
 }
+
+// ============================================
+// HANDWRITTEN DOODLE EASTER EGG
+// ============================================
+
+// Doodle messages for different triggers
+const doodleMessages = {
+  chanuka: [
+    "Hey! You found me! 👋",
+    "Life's too short to write code without comments.",
+    "0f111 919 1d53484a 1a1e19471 e0a181d1b 0b02 4b0e06 0346100 4190a065 6115 8093 8195d10 5c3a0e3 60a36",
+    "Decode the message to find the secret!",
+  ],
+  techStack: [
+    "You may find the secret key in the sky... 🌟",
+    "Look to the stars, and you might discover something hidden... ✨",
+    "The answer lies among the constellations... 🔭",
+  ],
+  experience: ["Keep Looking", "You are on right track", "Don't give up!"],
+  projects: [
+    'Decode the message: <a href="https://md5decrypt.net/en/Xor/" target="_blank" style="color: #333; text-decoration: underline;">md5decrypt.net/en/Xor/</a>',
+  ],
+};
+
+// Reusable doodle creation function
+function createDoodle(message, position = null) {
+  // Remove existing doodle if any
+  const existingDoodle = document.querySelector(".handwritten-doodle");
+  if (existingDoodle) {
+    existingDoodle.remove();
+  }
+
+  const doodle = document.createElement("div");
+  doodle.className = "handwritten-doodle";
+
+  // Random message if array provided
+  const displayMessage =
+    Array.isArray(message) && message.length > 0
+      ? message[Math.floor(Math.random() * message.length)]
+      : message;
+
+  doodle.innerHTML = `
+    <div class="doodle-content">
+      <div class="doodle-text">${displayMessage}</div>
+      <button class="doodle-close" aria-label="Close">×</button>
+    </div>
+  `;
+
+  // Position the doodle
+  if (position) {
+    doodle.style.left = `${position.x}px`;
+    doodle.style.top = `${position.y}px`;
+  } else {
+    // Center by default
+    doodle.style.left = "50%";
+    doodle.style.top = "50%";
+    doodle.style.transform = "translate(-50%, -50%)";
+  }
+
+  document.body.appendChild(doodle);
+
+  // Animate in
+  setTimeout(() => {
+    doodle.classList.add("active");
+  }, 10);
+
+  // Close button
+  const closeBtn = doodle.querySelector(".doodle-close");
+  closeBtn.addEventListener("click", () => {
+    doodle.classList.remove("active");
+    setTimeout(() => {
+      doodle.remove();
+    }, 300);
+  });
+
+  // Close on click outside
+  setTimeout(() => {
+    const handleOutsideClick = (e) => {
+      if (!doodle.contains(e.target)) {
+        doodle.classList.remove("active");
+        setTimeout(() => {
+          doodle.remove();
+        }, 300);
+        document.removeEventListener("click", handleOutsideClick);
+      }
+    };
+    setTimeout(() => {
+      document.addEventListener("click", handleOutsideClick);
+    }, 100);
+  }, 100);
+
+  // Auto-close after 5 seconds
+  setTimeout(() => {
+    if (doodle.parentNode) {
+      doodle.classList.remove("active");
+      setTimeout(() => {
+        if (doodle.parentNode) {
+          doodle.remove();
+        }
+      }, 300);
+    }
+  }, 5000);
+}
+
+// Initialize doodle triggers
+function initDoodleTriggers() {
+  // Double-click on Chanuka name
+  const chanukaElement = document.querySelector(".typing-animation");
+  if (chanukaElement) {
+    let clickCount = 0;
+    let clickTimer = null;
+
+    chanukaElement.addEventListener("click", (e) => {
+      clickCount++;
+
+      if (clickCount === 1) {
+        clickTimer = setTimeout(() => {
+          clickCount = 0;
+        }, 300); // 300ms window for double-click
+      } else if (clickCount === 2) {
+        clearTimeout(clickTimer);
+        clickCount = 0;
+
+        // Get click position
+        const rect = chanukaElement.getBoundingClientRect();
+        const position = {
+          x: e.clientX - 150, // Offset to center doodle on click
+          y: e.clientY - 100,
+        };
+
+        createDoodle(doodleMessages.chanuka, position);
+      }
+    });
+  }
+
+  // Double-click on Technical Skills heading
+  const techStackHeading = document.querySelector(".tech-stack-head");
+  if (techStackHeading) {
+    let clickCount = 0;
+    let clickTimer = null;
+
+    techStackHeading.addEventListener("click", (e) => {
+      clickCount++;
+
+      if (clickCount === 1) {
+        clickTimer = setTimeout(() => {
+          clickCount = 0;
+        }, 300); // 300ms window for double-click
+      } else if (clickCount === 2) {
+        clearTimeout(clickTimer);
+        clickCount = 0;
+
+        // Get click position
+        const rect = techStackHeading.getBoundingClientRect();
+        const position = {
+          x: e.clientX - 150, // Offset to center doodle on click
+          y: e.clientY - 100,
+        };
+
+        createDoodle(doodleMessages.techStack, position);
+      }
+    });
+  }
+
+  // Double-click on Experience title
+  const experienceHeading = document.querySelector(".timeline-section-title");
+  if (experienceHeading) {
+    let clickCount = 0;
+    let clickTimer = null;
+
+    experienceHeading.addEventListener("click", (e) => {
+      clickCount++;
+
+      if (clickCount === 1) {
+        clickTimer = setTimeout(() => {
+          clickCount = 0;
+        }, 300); // 300ms window for double-click
+      } else if (clickCount === 2) {
+        clearTimeout(clickTimer);
+        clickCount = 0;
+
+        // Get click position
+        const rect = experienceHeading.getBoundingClientRect();
+        const position = {
+          x: e.clientX - 150, // Offset to center doodle on click
+          y: e.clientY - 100,
+        };
+
+        createDoodle(doodleMessages.experience, position);
+      }
+    });
+  }
+
+  // Double-click on Projects title
+  const projectsHeading = document.querySelector(".project-head");
+  if (projectsHeading) {
+    let clickCount = 0;
+    let clickTimer = null;
+
+    projectsHeading.addEventListener("click", (e) => {
+      clickCount++;
+
+      if (clickCount === 1) {
+        clickTimer = setTimeout(() => {
+          clickCount = 0;
+        }, 300); // 300ms window for double-click
+      } else if (clickCount === 2) {
+        clearTimeout(clickTimer);
+        clickCount = 0;
+
+        // Get click position
+        const rect = projectsHeading.getBoundingClientRect();
+        const position = {
+          x: e.clientX - 150, // Offset to center doodle on click
+          y: e.clientY - 100,
+        };
+
+        createDoodle(doodleMessages.projects, position);
+      }
+    });
+  }
+}
+
+// Initialize on DOM ready
+document.addEventListener("DOMContentLoaded", () => {
+  initDoodleTriggers();
+});

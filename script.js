@@ -122,22 +122,25 @@ function updateNavTitle(newTitle) {
 // Testimonials data array
 const testimonialsData = [
   {
-    text: "Chanuka is an exceptional developer with a keen eye for detail and a passion for creating innovative solutions. His technical expertise and collaborative approach make him a valuable team member.",
-    author: "John Smith",
-    role: "Senior Software Engineer",
-    rating: 5,
+    text: "Chanuka has a solid technical foundation and a practical approach to problem-solving, consistently delivering work that is thoughtful and well-structured. Chanuka is also eager to learn and quick to adapt, always looking for ways to improve both his own skills and the solutions he builds",
+    author: "Sulakshana Amaragunasekara",
+    role: "Director of Engineering",
+    photo:
+      "https://media.licdn.com/dms/image/v2/C5603AQF0GtuYn7OJeA/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1516265886596?e=1764201600&v=beta&t=0ljbHODG9U6fA9wgQLUqdSfh1_dYEkPRqa8Q5hpsRUQ",
   },
   {
     text: "Working with Chanuka has been a pleasure. He consistently delivers high-quality code and brings creative solutions to complex problems. His dedication to learning and growth is inspiring.",
-    author: "Sarah Johnson",
-    role: "Project Manager",
-    rating: 5,
+    author: "Nilusha Bandara",
+    role: "Lead Product Owner",
+    photo:
+      "https://media.licdn.com/dms/image/v2/D5603AQFtQAnPibCP4A/profile-displayphoto-shrink_100_100/profile-displayphoto-shrink_100_100/0/1711122543500?e=1764201600&v=beta&t=yAiOEhvygKOGtrJccezGfA5u4LDhQQsGDNNdd1qo59Y",
   },
   {
     text: "Chanuka's ability to understand requirements and translate them into elegant solutions is remarkable. He's a reliable developer who always goes the extra mile.",
-    author: "Michael Chen",
+    author: "Avenash Krishnakumar",
     role: "Tech Lead",
-    rating: 5,
+    photo:
+      "https://media.licdn.com/dms/image/v2/D5603AQEx1IKUjrtVGg/profile-displayphoto-shrink_100_100/profile-displayphoto-shrink_100_100/0/1665427134280?e=1764201600&v=beta&t=Zixf0KHyy93TWJX_f4liMGmdUXRANT9nNUIu30Ixcvw",
   },
 ];
 
@@ -168,8 +171,6 @@ function createTestimonialCard(testimonial) {
     </svg>
   `;
 
-  const stars = "★".repeat(testimonial.rating);
-
   card.innerHTML = `
     <div class="testimonial-quote">
       ${quoteIcon}
@@ -177,14 +178,23 @@ function createTestimonialCard(testimonial) {
     </div>
     <div class="testimonial-author">
       <div class="author-info">
-        <h3 class="author-name">${testimonial.author}</h3>
-        <p class="author-role">${testimonial.role}</p>
-      </div>
-      <div class="testimonial-rating">
-        ${stars
-          .split("")
-          .map(() => '<span class="star">★</span>')
-          .join("")}
+        <img 
+          src="${
+            testimonial.photo ||
+            "https://ui-avatars.com/api/?name=" +
+              encodeURIComponent(testimonial.author) +
+              "&background=random&color=fff&size=128"
+          }" 
+          alt="${testimonial.author}"
+          class="author-photo"
+          onerror="this.src='https://ui-avatars.com/api/?name=' + encodeURIComponent('${
+            testimonial.author
+          }') + '&background=random&color=fff&size=128'"
+        />
+        <div class="author-details">
+          <h3 class="author-name">${testimonial.author}</h3>
+          <p class="author-role">${testimonial.role}</p>
+        </div>
       </div>
     </div>
   `;
@@ -201,6 +211,39 @@ function populateTestimonials() {
   testimonialsData.forEach((testimonial) => {
     const card = createTestimonialCard(testimonial);
     container.appendChild(card);
+  });
+
+  // Align separation lines after all cards are rendered
+  alignTestimonialSeparators();
+}
+
+// Function to align separation lines at the same level
+function alignTestimonialSeparators() {
+  const cards = document.querySelectorAll(".testimonial-card");
+  if (cards.length === 0) return;
+
+  let maxQuoteHeight = 0;
+
+  // First pass: find the maximum height of quote sections
+  cards.forEach((card) => {
+    const quoteSection = card.querySelector(".testimonial-quote");
+    if (quoteSection) {
+      // Reset any previous positioning
+      quoteSection.style.height = "auto";
+      const height = quoteSection.offsetHeight;
+      if (height > maxQuoteHeight) {
+        maxQuoteHeight = height;
+      }
+    }
+  });
+
+  // Second pass: set all quote sections to the same height
+  // This will position all author sections at the same level
+  cards.forEach((card) => {
+    const quoteSection = card.querySelector(".testimonial-quote");
+    if (quoteSection) {
+      quoteSection.style.height = `${maxQuoteHeight}px`;
+    }
   });
 }
 
